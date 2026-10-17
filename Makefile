@@ -219,4 +219,4 @@ uninstall: __check-target
 	done
 
 clean:
-	$(MAKE) -C "$(SRC_DIR)" clean TARGET="$(TARGET)"
+	$(MAKE) -C "$(SRC_DIR)" clean
