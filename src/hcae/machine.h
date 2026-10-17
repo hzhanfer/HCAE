@@ -29,9 +29,11 @@ void HCAE_SetMachineRAM(HCAE_Machine*, hcae_cpu_word, hcae_cpu_word);
 void HCAE_SetMachineROM(HCAE_Machine*, hcae_cpu_word, hcae_cpu_word);
 void HCAE_SetMachineMMIO(HCAE_Machine*, hcae_cpu_word, hcae_cpu_word);
 
-int HCAE_SetMachineROMVectorTable(HCAE_Machine*, const uint8_t*);
+int HCAE_CopyDataToMachineROM(HCAE_Machine* mach, const uint8_t*, size_t, hcae_cpu_word);
 
 int HCAE_PrintMachine(HCAE_Machine*);
+
+int HCAE_RunMachine(HCAE_Machine*);
 
 
 #endif

@@ -1,6 +1,9 @@
 #include <stdlib.h>
+#include <stdint.h>
 #include "cpu.h"
 #include "core/error.h"
+#include "core/machine.h"
+#include "core/hware/memory.h"
 
 
 HCAE_CPUModel* HCAE_CreateCPUModel(void) {
@@ -27,12 +30,6 @@ void HCAE_SetCPUModelMaxCoreCount(HCAE_CPUModel* model, size_t cnt) {
 }
 
 
-static inline int init_cpu_core(CPUCore* core) {
-    (void)core;
-    return 1;
-}
-
-
 void set_cpu_model(CPU* cpu, HCAE_CPUModel* model) {
     cpu->model = model;
 }
@@ -42,9 +39,11 @@ void set_cpu_core_cnt(CPU* cpu, size_t cnt) {
 }
 
 
-CPU* create_cpu(void) {
+CPU* create_cpu(HCAE_Machine* mach) {
     CPU* cpu = calloc(1, sizeof(CPU));
     if (!cpu) return NULL;
+    
+    cpu->mach = mach;
     
     return cpu;
 }
@@ -78,11 +77,11 @@ int apply_cpu_settings(CPU* cpu) {
     }
     
     for (size_t i = 0; i < cpu->core_cnt; i++) {
-        if (!init_cpu_core(&cpu->cores[i])) {
-            free(cpu->cores);
-            return 0;
-        }
+        CPUCore* core = &cpu->cores[i];
+        
+        core->cpu = cpu;
     }
     
     return 1;
 }
+

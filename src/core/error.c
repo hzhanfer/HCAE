@@ -13,3 +13,6 @@ HCAE_Error HCAE_GetError(void) {
     return err;
 }
 
+void HCAE_ResetError(void) {
+    err = HCAE_ERROR_N;
+}

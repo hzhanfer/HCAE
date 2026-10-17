@@ -10,7 +10,10 @@
 
 
 struct HCAE_Machine {
-    bool settings_applied;
+    bool
+        running,
+        settings_applied
+    ;
     
     CPU* cpu;
     Memory* mem;

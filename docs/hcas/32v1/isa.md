@@ -29,5 +29,4 @@ This field only appears when Operand Order is RN, RR, or RV.
 2. RN (1): Register, none. One register.
 3. RR (2): Register, register. Two registers.
 4. RV (3): Register, value. One register, one value.
-5. VR (4): Value, register. One value, one register.
 5. VN (4): Value, none. One Value.

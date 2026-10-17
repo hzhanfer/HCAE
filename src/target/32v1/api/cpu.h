@@ -23,6 +23,10 @@ enum {
 };
 
 
+#define HCAE_VECTORTABLE_SIZE 16
+#define HCAE_VECTORTABLE_OFF 0x00000000
+
+
 HCAE_CPUModel* HCAE_CreateCPUModel(void);
 void HCAE_DestroyCPUModel(HCAE_CPUModel*);
 

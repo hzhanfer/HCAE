@@ -10,13 +10,15 @@
 
 
 HCAE_Machine* HCAE_CreateMachine(void) {
+    if (HCAE_GetError() != HCAE_ERROR_N) return 0;
+    
     HCAE_Machine* mach = calloc(1, sizeof(HCAE_Machine));
     if (!mach) {
         set_error(HCAE_ERROR_OOM);
         return NULL;
     }
     
-    CPU* cpu = create_cpu();
+    CPU* cpu = create_cpu(mach);
     if (!cpu) {
         free(mach);
         return NULL;
@@ -35,6 +37,11 @@ HCAE_Machine* HCAE_CreateMachine(void) {
 }
 
 void HCAE_DestroyMachine(HCAE_Machine* mach) {
+    if (!mach) {
+        set_error(HCAE_ERROR_II);
+        return;
+    }
+    
     destroy_cpu(mach->cpu);
     destroy_memory(mach->mem);
     free(mach);
@@ -42,6 +49,13 @@ void HCAE_DestroyMachine(HCAE_Machine* mach) {
 
 
 int HCAE_ApplyMachineSettings(HCAE_Machine* mach) {
+    if (HCAE_GetError() != HCAE_ERROR_N) return 0;
+    
+    if (!mach) {
+        set_error(HCAE_ERROR_II);
+        return 0;
+    }
+    
     if (mach->settings_applied) {
         set_error(HCAE_ERROR_SHABA);
         return 0;
@@ -56,6 +70,13 @@ int HCAE_ApplyMachineSettings(HCAE_Machine* mach) {
 
 
 void HCAE_SetMachineCPUModel(HCAE_Machine* mach, HCAE_CPUModel* model) {
+    if (HCAE_GetError() != HCAE_ERROR_N) return;
+    
+    if (!mach || !model) {
+        set_error(HCAE_ERROR_II);
+        return;
+    }
+    
     if (mach->settings_applied) {
         set_error(HCAE_ERROR_ATCASASHABA);
         return;
@@ -65,6 +86,13 @@ void HCAE_SetMachineCPUModel(HCAE_Machine* mach, HCAE_CPUModel* model) {
 }
 
 void HCAE_SetMachineCPUCoreCount(HCAE_Machine* mach, size_t cnt) {
+    if (HCAE_GetError() != HCAE_ERROR_N) return;
+    
+    if (!mach) {
+        set_error(HCAE_ERROR_II);
+        return;
+    }
+    
     if (mach->settings_applied) {
         set_error(HCAE_ERROR_ATCASASHABA);
         return;
@@ -75,6 +103,13 @@ void HCAE_SetMachineCPUCoreCount(HCAE_Machine* mach, size_t cnt) {
 
 
 void HCAE_SetMachineRAM(HCAE_Machine* mach, hcae_cpu_word bot, hcae_cpu_word size) {
+    if (HCAE_GetError() != HCAE_ERROR_N) return;
+    
+    if (!mach) {
+        set_error(HCAE_ERROR_II);
+        return;
+    }
+    
     if (mach->settings_applied) {
         set_error(HCAE_ERROR_ATCASASHABA);
         return;
@@ -84,6 +119,13 @@ void HCAE_SetMachineRAM(HCAE_Machine* mach, hcae_cpu_word bot, hcae_cpu_word siz
 }
 
 void HCAE_SetMachineROM(HCAE_Machine* mach, hcae_cpu_word bot, hcae_cpu_word size) {
+    if (HCAE_GetError() != HCAE_ERROR_N) return;
+    
+    if (!mach) {
+        set_error(HCAE_ERROR_II);
+        return;
+    }
+    
     if (mach->settings_applied) {
         set_error(HCAE_ERROR_ATCASASHABA);
         return;
@@ -93,6 +135,13 @@ void HCAE_SetMachineROM(HCAE_Machine* mach, hcae_cpu_word bot, hcae_cpu_word siz
 }
 
 void HCAE_SetMachineMMIO(HCAE_Machine* mach, hcae_cpu_word bot, hcae_cpu_word size) {
+    if (HCAE_GetError() != HCAE_ERROR_N) return;
+    
+    if (!mach) {
+        set_error(HCAE_ERROR_II);
+        return;
+    }
+    
     if (mach->settings_applied) {
         set_error(HCAE_ERROR_ATCASASHABA);
         return;
@@ -101,24 +150,40 @@ void HCAE_SetMachineMMIO(HCAE_Machine* mach, hcae_cpu_word bot, hcae_cpu_word si
     set_mmio(mach->mem, bot, size);
 }
 
-int HCAE_SetMachineROMVectorTable(HCAE_Machine* mach, const uint8_t* table) {
+int HCAE_CopyDataToMachineROM(
+    HCAE_Machine* mach,
+    const uint8_t* data,
+    size_t size,
+    hcae_cpu_word pos) 
+{
+    if (HCAE_GetError() != HCAE_ERROR_N) return 0;
+    
+    if (!mach || !data) {
+        set_error(HCAE_ERROR_II);
+        return 0;
+    }
+    
     if (!mach->settings_applied) {
         set_error(HCAE_ERROR_ORSTBA);
         return 0;
     }
     
-    if (!mach->mem->block) {
-        set_error(HCAE_ERROR_MNAY);
+    if (pos < mach->mem->rom.bot || (size_t)pos + size > mach->mem->rom.top) {
+        set_error(HCAE_ERROR_OOB);
         return 0;
     }
     
-    memcpy(mach->mem->block, table, 16);
-    
+    memcpy(mach->mem->block + mach->mem->rom.bot + pos, data, size);
     return 1;
 }
 
 
 int HCAE_PrintMachine(HCAE_Machine* mach) {
+    if (!mach) {
+        set_error(HCAE_ERROR_II);
+        return 0;
+    }
+    
     if (!mach->settings_applied) {
         set_error(HCAE_ERROR_ORSTBA);
         return 0;
@@ -180,6 +245,30 @@ int HCAE_PrintMachine(HCAE_Machine* mach) {
         mach->mem->mmio.bot, mach->mem->mmio.top, mach->mem->mmio.size,
         mach->mem->total_size
     );
+    
+    return 1;
+}
+
+
+int HCAE_RunMachine(HCAE_Machine* mach) {
+    if (!mach) {
+        set_error(HCAE_ERROR_II);
+        return 0;
+    }
+    
+    if (mach->running) {
+        set_error(HCAE_ERROR_MAR);
+        return 0;
+    }
+    
+    if (!mach->settings_applied) {
+        set_error(HCAE_ERROR_ORSTBA);
+        return 0;
+    }
+    
+    mach->running = true;
+    
+    run_cpu(mach->cpu);
     
     return 1;
 }

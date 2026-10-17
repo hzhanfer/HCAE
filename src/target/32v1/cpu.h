@@ -4,26 +4,37 @@
 
 #include <stdlib.h>
 #include "api/cpu.h"
+#include "cpu-run.h"
 
 
 #define CPU_NUM_REGS 16
 #define CPU_NUM_SREGS 3
 
 
+typedef struct HCAE_Machine HCAE_Machine;
+
+typedef struct CPU CPU;
+
+
 typedef struct CPUCore {
+    CPU* cpu;
+    
     hcae_cpu_word
-        regs[CPU_NUM_REGS],
-        sregs[CPU_NUM_SREGS]
+        regs[CPU_NUM_REGS], // general
+        sregs[CPU_NUM_SREGS] // system
     ;
+    
+    CPUInstr instr; // instruction buffer
 } CPUCore;
 
 
-typedef struct CPU {
+struct CPU {
+    HCAE_Machine* mach;
     HCAE_CPUModel* model;
     
     CPUCore* cores;
     size_t core_cnt;
-} CPU;
+};
 
 
 struct HCAE_CPUModel {
@@ -33,12 +44,14 @@ struct HCAE_CPUModel {
 };
 
 
-CPU* create_cpu(void);
+CPU* create_cpu(HCAE_Machine*);
 void destroy_cpu(CPU*);
 
 int apply_cpu_settings(CPU*);
 void set_cpu_model(CPU*, HCAE_CPUModel*);
 void set_cpu_core_cnt(CPU*, size_t);
+
+void run_cpu(CPU*);
 
 
 #endif

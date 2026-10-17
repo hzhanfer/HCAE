@@ -1,15 +1,19 @@
 #include <stdint.h>
-#define HCAE_TARGET_CPU_HEADER "api/cpu.h"
-#include "hcae/machine.h"
+#include "core/machine.h"
 #include "api/cpu.h"
-#include "hcae/error.h"
+#include "core/error.h"
 
 
-const uint8_t vectortable[16] = {
-    0x10, 0x00, 0x00, 0x00, // reset
+const uint8_t vectortable[HCAE_VECTORTABLE_SIZE] = {
+    HCAE_VECTORTABLE_SIZE, 0x00, 0x00, 0x00, // reset
     0x00, 0x00, 0x00, 0x00, // nmi handler
     0x00, 0x00, 0x00, 0x00, // irq handler
     0x00, 0x00, 0x00, 0x00  // synchronous exception handler
+};
+
+const uint8_t bootrom[] = {
+    0xAB, 0xCD, 0xEF, 0x12,
+    0x34, 0x56, 0x78, 0x89 
 };
 
 
@@ -38,9 +42,12 @@ int main(void) {
         return HCAE_GetError();
     }
     
-    HCAE_SetMachineROMVectorTable(mach, vectortable);
+    HCAE_CopyDataToMachineROM(mach, vectortable, HCAE_VECTORTABLE_SIZE, HCAE_VECTORTABLE_OFF);
+    HCAE_CopyDataToMachineROM(mach, bootrom, sizeof(bootrom), HCAE_VECTORTABLE_OFF + HCAE_VECTORTABLE_SIZE);
     
     HCAE_PrintMachine(mach);
+    
+    HCAE_RunMachine(mach);
     
     HCAE_DestroyCPUModel(hyronicl1);
     HCAE_DestroyMachine(mach);
