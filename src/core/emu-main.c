@@ -17,16 +17,16 @@ int main(void) {
     HCAE_Machine* mach = HCAE_CreateMachine();
     if (!mach) return HCAE_GetError();
     
-    HCAE_CPUDefinition* hyronicl1 = HCAE_CreateCPUDefinition();
+    HCAE_CPUModel* hyronicl1 = HCAE_CreateCPUModel();
     if (!hyronicl1) {
         HCAE_DestroyMachine(mach);
         return HCAE_GetError();
     }
     
-    HCAE_SetCPUDefinitionName(hyronicl1, "Hyronic-L1");
-    HCAE_SetCPUDefinitionMaxCoreCount(hyronicl1, 2);
+    HCAE_SetCPUModelName(hyronicl1, "Hyronic-L1");
+    HCAE_SetCPUModelMaxCoreCount(hyronicl1, 2);
     
-    HCAE_SetMachineCPUDefinition(mach, hyronicl1);
+    HCAE_SetMachineCPUModel(mach, hyronicl1);
     HCAE_SetMachineCPUCoreCount(mach, 2);
     
     HCAE_SetMachineRAM(mach, 0x4000, 0x8000);
@@ -42,7 +42,7 @@ int main(void) {
     
     HCAE_PrintMachine(mach);
     
-    HCAE_DestroyCPUDefinition(hyronicl1);
+    HCAE_DestroyCPUModel(hyronicl1);
     HCAE_DestroyMachine(mach);
     return HCAE_GetError();
 }

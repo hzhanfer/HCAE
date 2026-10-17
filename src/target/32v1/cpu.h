@@ -19,14 +19,14 @@ typedef struct CPUCore {
 
 
 typedef struct CPU {
-    HCAE_CPUDefinition* def;
+    HCAE_CPUModel* model;
     
     CPUCore* cores;
     size_t core_cnt;
 } CPU;
 
 
-struct HCAE_CPUDefinition {
+struct HCAE_CPUModel {
     const char* name;
     
     size_t max_core_cnt;
@@ -37,7 +37,7 @@ CPU* create_cpu(void);
 void destroy_cpu(CPU*);
 
 int apply_cpu_settings(CPU*);
-void set_cpu_def(CPU*, HCAE_CPUDefinition*);
+void set_cpu_model(CPU*, HCAE_CPUModel*);
 void set_cpu_core_cnt(CPU*, size_t);
 
 

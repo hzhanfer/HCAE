@@ -55,13 +55,13 @@ int HCAE_ApplyMachineSettings(HCAE_Machine* mach) {
 }
 
 
-void HCAE_SetMachineCPUDefinition(HCAE_Machine* mach, HCAE_CPUDefinition* def) {
+void HCAE_SetMachineCPUModel(HCAE_Machine* mach, HCAE_CPUModel* model) {
     if (mach->settings_applied) {
         set_error(HCAE_ERROR_ATCASASHABA);
         return;
     }
     
-    mach->cpu->def = def;
+    mach->cpu->model = model;
 }
 
 void HCAE_SetMachineCPUCoreCount(HCAE_Machine* mach, size_t cnt) {
@@ -133,8 +133,8 @@ int HCAE_PrintMachine(HCAE_Machine* mach) {
         "    },\n"
         "    Core Count: %zu,\n"
         "    Cores [\n",
-        mach->cpu->def->name,
-        mach->cpu->def->max_core_cnt,
+        mach->cpu->model->name,
+        mach->cpu->model->max_core_cnt,
         mach->cpu->core_cnt
     );
     

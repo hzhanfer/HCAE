@@ -9,7 +9,7 @@
 typedef uint32_t hcae_cpu_word;
 
 
-typedef struct HCAE_CPUDefinition HCAE_CPUDefinition;
+typedef struct HCAE_CPUModel HCAE_CPUModel;
 
 
 enum {
@@ -23,11 +23,11 @@ enum {
 };
 
 
-HCAE_CPUDefinition* HCAE_CreateCPUDefinition(void);
-void HCAE_DestroyCPUDefinition(HCAE_CPUDefinition*);
+HCAE_CPUModel* HCAE_CreateCPUModel(void);
+void HCAE_DestroyCPUModel(HCAE_CPUModel*);
 
-void HCAE_SetCPUDefinitionName(HCAE_CPUDefinition*, const char*);
-void HCAE_SetCPUDefinitionMaxCoreCount(HCAE_CPUDefinition*, size_t);
+void HCAE_SetCPUModelName(HCAE_CPUModel*, const char*);
+void HCAE_SetCPUModelMaxCoreCount(HCAE_CPUModel*, size_t);
 
 
 #endif

@@ -3,27 +3,27 @@
 #include "core/error.h"
 
 
-HCAE_CPUDefinition* HCAE_CreateCPUDefinition(void) {
-    HCAE_CPUDefinition* def = calloc(1, sizeof(HCAE_CPUDefinition));
-    if (!def) {
+HCAE_CPUModel* HCAE_CreateCPUModel(void) {
+    HCAE_CPUModel* model = calloc(1, sizeof(HCAE_CPUModel));
+    if (!model) {
         set_error(HCAE_ERROR_OOM);
         return NULL;
     }
     
-    return def;
+    return model;
 }
 
-void HCAE_DestroyCPUDefinition(HCAE_CPUDefinition* def) {
-    free(def);
+void HCAE_DestroyCPUModel(HCAE_CPUModel* model) {
+    free(model);
 }
 
 
-void HCAE_SetCPUDefinitionName(HCAE_CPUDefinition* def, const char* name) {
-    def->name = name;
+void HCAE_SetCPUModelName(HCAE_CPUModel* model, const char* name) {
+    model->name = name;
 }
 
-void HCAE_SetCPUDefinitionMaxCoreCount(HCAE_CPUDefinition* def, size_t cnt) {
-    def->max_core_cnt = cnt;
+void HCAE_SetCPUModelMaxCoreCount(HCAE_CPUModel* model, size_t cnt) {
+    model->max_core_cnt = cnt;
 }
 
 
@@ -33,8 +33,8 @@ static inline int init_cpu_core(CPUCore* core) {
 }
 
 
-void set_cpu_def(CPU* cpu, HCAE_CPUDefinition* def) {
-    cpu->def = def;
+void set_cpu_model(CPU* cpu, HCAE_CPUModel* model) {
+    cpu->model = model;
 }
 
 void set_cpu_core_cnt(CPU* cpu, size_t cnt) {
@@ -56,17 +56,17 @@ void destroy_cpu(CPU* cpu) {
 
 
 int apply_cpu_settings(CPU* cpu) {
-    if (!cpu->def) {
-        set_error(HCAE_ERROR_CDNS);
+    if (!cpu->model) {
+        set_error(HCAE_ERROR_CMNS);
         return 0;
     }
     
-    if (cpu->def->max_core_cnt < 1) {
-        set_error(HCAE_ERROR_ICDMCC);
+    if (cpu->model->max_core_cnt < 1) {
+        set_error(HCAE_ERROR_ICMMCC);
         return 0;
     }
     
-    if (cpu->core_cnt < 1 || cpu->core_cnt > cpu->def->max_core_cnt) {
+    if (cpu->core_cnt < 1 || cpu->core_cnt > cpu->model->max_core_cnt) {
         set_error(HCAE_ERROR_ICCC);
         return 0;
     }
