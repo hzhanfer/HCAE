@@ -7,10 +7,14 @@
 
 
 #define CPU_NUM_REGS 16
+#define CPU_NUM_SREGS 3
 
 
 typedef struct CPUCore {
-    hcae_cpu_word regs[CPU_NUM_REGS];
+    hcae_cpu_word
+        regs[CPU_NUM_REGS],
+        sregs[CPU_NUM_SREGS]
+    ;
 } CPUCore;
 
 

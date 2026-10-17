@@ -2,6 +2,7 @@ TARGET ?=
 
 TARGET_DIR := target
 TARGET_TARGET_DIR := $(TARGET_DIR)/$(TARGET)
+TARGET_TARGET_API_DIR := api
 
 EMU_MAIN_O_FILE := $(BUILD_DIR)/core/emu-main.o
 CONF_MAIN_O_FILE := $(BUILD_DIR)/core/config-main.o
@@ -26,7 +27,8 @@ CC_FLAGS := \
 	-Wall -Wextra \
 	-I. -Icore -I$(TARGET_TARGET_DIR) \
 	-ffunction-sections -fdata-sections \
-	-fPIC -O2
+	-fPIC -O2 \
+	-DTARGET_CPU_HEADER=\"$(TARGET_TARGET_DIR)/$(TARGET_TARGET_API_DIR)/cpu.h\"
 
 DEP_FLAGS := -MMD -MP
 LD_FLAGS := -Wl,--gc-sections -Wl,--strip-all

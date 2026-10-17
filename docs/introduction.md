@@ -8,4 +8,4 @@ This project was created primarily for entertainment and educational purposes.
 
 HCA is a RISC architecture designed with simplicity and efficiency in mind.
 
-- [hca32v1](hcas/32v1): The first 32-bit HCA specification.
+- [hca32v1](hcas/32v1/arch.md): The first 32-bit HCA specification.

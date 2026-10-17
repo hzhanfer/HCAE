@@ -1,0 +1,10 @@
+build/32v1/core/machine.o: core/machine.c core/machine.h hcae/machine.h \
+  target/32v1/api/cpu.h target/32v1/cpu.h core/hware/memory.h \
+  core/error.h hcae/error.h
+core/machine.h:
+hcae/machine.h:
+target/32v1/api/cpu.h:
+target/32v1/cpu.h:
+core/hware/memory.h:
+core/error.h:
+hcae/error.h:
