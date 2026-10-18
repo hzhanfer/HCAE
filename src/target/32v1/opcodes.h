@@ -8,6 +8,7 @@ enum {
     OPCODE_LD,
     OPCODE_ST,
     OPCODE_JMP,
+    OPCODE_PUT,
     _OPCODE_ENDOFLIST
 };
 

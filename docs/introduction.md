@@ -4,6 +4,8 @@ HCAE is a functional emulator for Himrich CPU Architectures (HCAs).
 
 This project was created primarily for entertainment and educational purposes.
 
+(Big-endian hosts are nor supported)
+
 # Himrich's CPU Architecture (HCA)
 
 HCA is a RISC architecture designed with simplicity and efficiency in mind.

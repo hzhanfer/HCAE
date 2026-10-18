@@ -208,12 +208,12 @@ int HCAE_PrintMachine(HCAE_Machine* mach) {
         
         printf(
             "      %zu {\n"
-            "        PST:  %08x, EDAT:  %08x, ELR:  %08x,\n"
-            "        PC:   %08x, LR:    %08x, SP:   %08x,\n"
-            "        R00:  %08x, R01:   %08x, R02:  %08x,\n"
-            "        R03:  %08x, R04:   %08x, R05:  %08x,\n"
-            "        R06:  %08x, R07:   %08x, R08:  %08x,\n"
-            "        R09:  %08x\n"
+            "        PST:  0x%08x, EDAT:  0x%08x, ELR:  0x%08x,\n"
+            "        PC:   0x%08x, LR:    0x%08x, SP:   0x%08x,\n"
+            "        R00:  0x%08x, R01:   0x%08x, R02:  0x%08x,\n"
+            "        R03:  0x%08x, R04:   0x%08x, R05:  0x%08x,\n"
+            "        R06:  0x%08x, R07:   0x%08x, R08:  0x%08x,\n"
+            "        R09:  0x%08x\n"
             "      }",
             i,
             core->sregs[HCAE_SREG_PST], core->sregs[HCAE_SREG_EDAT], core->sregs[HCAE_SREG_ELR],
@@ -234,9 +234,9 @@ int HCAE_PrintMachine(HCAE_Machine* mach) {
         "    ]\n"
         "  },\n"
         "  Memory {\n"
-        "    RAM: %08x-%08x %08x,\n"
-        "    ROM: %08x-%08x %08x,\n"
-        "    MMIO: %08x-%08x %08x,\n"
+        "    RAM: 0x%08x-0x%08x 0x%08x,\n"
+        "    ROM: 0x%08x-0x%08x 0x%08x,\n"
+        "    MMIO: 0x%08x-0x%08x 0x%08x,\n"
         "    Total Size: %08x\n"
         "  }\n"
         "}\n",
@@ -250,7 +250,7 @@ int HCAE_PrintMachine(HCAE_Machine* mach) {
 }
 
 
-int HCAE_RunMachine(HCAE_Machine* mach) {
+int HCAE_RunMachine(HCAE_Machine* mach, size_t step_cnt) {
     if (!mach) {
         set_error(HCAE_ERROR_II);
         return 0;
@@ -268,7 +268,7 @@ int HCAE_RunMachine(HCAE_Machine* mach) {
     
     mach->running = true;
     
-    run_cpu(mach->cpu);
+    run_cpu(mach->cpu, step_cnt);
     
     return 1;
 }

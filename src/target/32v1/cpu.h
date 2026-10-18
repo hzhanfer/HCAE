@@ -51,7 +51,7 @@ int apply_cpu_settings(CPU*);
 void set_cpu_model(CPU*, HCAE_CPUModel*);
 void set_cpu_core_cnt(CPU*, size_t);
 
-void run_cpu(CPU*);
+void run_cpu(CPU*, size_t);
 
 
 #endif

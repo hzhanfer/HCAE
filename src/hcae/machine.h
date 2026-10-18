@@ -33,7 +33,7 @@ int HCAE_CopyDataToMachineROM(HCAE_Machine* mach, const uint8_t*, size_t, hcae_c
 
 int HCAE_PrintMachine(HCAE_Machine*);
 
-int HCAE_RunMachine(HCAE_Machine*);
+int HCAE_RunMachine(HCAE_Machine*, size_t);
 
 
 #endif

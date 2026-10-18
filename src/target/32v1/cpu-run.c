@@ -19,18 +19,17 @@ void cpu_core_syncexcept(CPUCore* core, SyncExceptType type) {
            (uint8_t*)mem->block + HCAE_VECTORTABLE_SYNCEXCEPT_ADDR,
            sizeof(core->regs[HCAE_REG_PC]));
     
-    printf("// Synchronous Exception #%x at %08x\n", core->sregs[HCAE_SREG_EDAT], core->sregs[HCAE_SREG_ELR]);
+    printf("// Synchronous Exception #%x at 0x%08x\n", core->sregs[HCAE_SREG_EDAT], core->sregs[HCAE_SREG_ELR]);
 }
 
 
-static inline int fetch_cpu_core_instr(CPUCore* core, Instr* instr, hcae_cpu_word* out_instr_addr) {
+static inline int fetch_cpu_core_instr(CPUCore* core, Instr* instr) {
     Memory* mem = core->mem;
     
-    hcae_cpu_word instr_addr = core->regs[HCAE_REG_PC]; // start of the instruction
-    *out_instr_addr = instr_addr;
+    instr->addr = core->regs[HCAE_REG_PC]; // start of the instruction
     
     if (!mem_read(mem, core->regs[HCAE_REG_PC], (uint8_t*)&instr->opcode)) { // lower 8 opcode bits
-        core->regs[HCAE_REG_PC] = instr_addr;
+        core->regs[HCAE_REG_PC] = instr->addr;
         cpu_core_syncexcept(core, SYNCEXCEPT_MF);
         return 0;
     }
@@ -38,7 +37,7 @@ static inline int fetch_cpu_core_instr(CPUCore* core, Instr* instr, hcae_cpu_wor
     
     uint8_t second_byte;
     if (!mem_read(mem, core->regs[HCAE_REG_PC], &second_byte)) {
-        core->regs[HCAE_REG_PC] = instr_addr;
+        core->regs[HCAE_REG_PC] = instr->addr;
         cpu_core_syncexcept(core, SYNCEXCEPT_MF);
         return 0;
     }
@@ -46,14 +45,14 @@ static inline int fetch_cpu_core_instr(CPUCore* core, Instr* instr, hcae_cpu_wor
     
     instr->opcode |= ((uint16_t)(second_byte & 0x07)) << 8; // decode opcode
     if (instr->opcode <= _OPCODE_UDF || instr->opcode >= _OPCODE_ENDOFLIST) { // unknown opcode
-        core->regs[HCAE_REG_PC] = instr_addr;
+        core->regs[HCAE_REG_PC] = instr->addr;
         cpu_core_syncexcept(core, SYNCEXCEPT_UI);
         return 0;
     }
     
     uint8_t oper_ord = (second_byte >> 3) & 0x7; // decode operand order
     if (oper_ord >= _OPERORDER_ENDOFLIST) { // unknown operand order
-        core->regs[HCAE_REG_PC] = instr_addr;
+        core->regs[HCAE_REG_PC] = instr->addr;
         cpu_core_syncexcept(core, SYNCEXCEPT_UI);
         return 0;
     }
@@ -65,7 +64,7 @@ static inline int fetch_cpu_core_instr(CPUCore* core, Instr* instr, hcae_cpu_wor
         uint8_t regs_byte;
         
         if (!mem_read(mem, core->regs[HCAE_REG_PC], &regs_byte)) {
-            core->regs[HCAE_REG_PC] = instr_addr;
+            core->regs[HCAE_REG_PC] = instr->addr;
             cpu_core_syncexcept(core, SYNCEXCEPT_MF);
             return 0;
         }
@@ -75,13 +74,13 @@ static inline int fetch_cpu_core_instr(CPUCore* core, Instr* instr, hcae_cpu_wor
         instr->rs = (regs_byte >> 4) & 0xf; // upper 4-bits
     }
     
+    instr->val_len = ((second_byte >> 6) & 0x3) + 1;
+        
     if (oper_ord == OPERORDER_RV || // fetch value
         oper_ord == OPERORDER_VN)
     {
-        instr->val_len = ((second_byte >> 6) & 0x3) + 1;
-        
         if (!mem_read_arr(mem, core->regs[HCAE_REG_PC], (uint8_t*)&instr->val, instr->val_len)) {
-            core->regs[HCAE_REG_PC] = instr_addr;
+            core->regs[HCAE_REG_PC] = instr->addr;
             cpu_core_syncexcept(core, SYNCEXCEPT_MF);
             return 0;
         }
@@ -95,14 +94,12 @@ static inline int fetch_cpu_core_instr(CPUCore* core, Instr* instr, hcae_cpu_wor
 static inline void step_cpu_core(CPUCore* core) {
     Instr instr = {0};
     
-    hcae_cpu_word instr_addr;
-    
-    if (!fetch_cpu_core_instr(core, &instr, &instr_addr))
+    if (!fetch_cpu_core_instr(core, &instr))
         return;
     
     instrfunc ifun = instrs[instr.opcode][instr.oper_ord];
     if (!ifun) { // unknown instruction
-        core->regs[HCAE_REG_PC] = instr_addr;
+        core->regs[HCAE_REG_PC] = instr.addr;
         cpu_core_syncexcept(core, SYNCEXCEPT_UI);
         return;
     }
@@ -120,7 +117,7 @@ static inline void step_cpu(CPU* cpu) {
     }
 }
 
-void run_cpu(CPU* cpu) {
+void run_cpu(CPU* cpu, size_t step_cnt) {
     CPUCore* core0 = &cpu->cores[0];
     HCAE_Machine* mach = cpu->mach;
     Memory* mem = mach->mem;
@@ -130,5 +127,13 @@ void run_cpu(CPU* cpu) {
            sizeof(core0->regs[HCAE_REG_PC]));
     set_pst_act(core0, 1); // set PST.ACT = 1
     
-    for (; mach->running;) step_cpu(cpu); // infinite loop
+    if (step_cnt == HCAE_MACHINE_RUNINFINITE) {
+        for (; mach->running;)
+            step_cpu(cpu);
+    } else {
+        for (size_t i = 0; mach->running && i < step_cnt; i++)
+            step_cpu(cpu); // infinite loop
+        
+        mach->running = false;
+    }
 }
