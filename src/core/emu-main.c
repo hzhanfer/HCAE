@@ -5,15 +5,21 @@
 
 
 const uint8_t vectortable[HCAE_VECTORTABLE_SIZE] = {
-    HCAE_VECTORTABLE_SIZE, 0x00, 0x00, 0x00, // reset
+    0x10, 0x00, 0x00, 0x00, // reset
     0x00, 0x00, 0x00, 0x00, // nmi handler
     0x00, 0x00, 0x00, 0x00, // irq handler
     0x00, 0x00, 0x00, 0x00  // synchronous exception handler
 };
 
 const uint8_t bootrom[] = {
-    0xAB, 0xCD, 0xEF, 0x12,
-    0x34, 0x56, 0x78, 0x89 
+    // o = opcode
+    // r = operand order
+    // l = value length
+    
+    //  oooooooo    llrrrooo
+    
+      0b00000001, 0b00000000,       // nop
+      0b00000100, 0b00100000, 0x10  // jmp [0x10]
 };
 
 
@@ -42,8 +48,8 @@ int main(void) {
         return HCAE_GetError();
     }
     
-    HCAE_CopyDataToMachineROM(mach, vectortable, HCAE_VECTORTABLE_SIZE, HCAE_VECTORTABLE_OFF);
-    HCAE_CopyDataToMachineROM(mach, bootrom, sizeof(bootrom), HCAE_VECTORTABLE_OFF + HCAE_VECTORTABLE_SIZE);
+    HCAE_CopyDataToMachineROM(mach, vectortable, HCAE_VECTORTABLE_SIZE, HCAE_VECTORTABLE_ADDR);
+    HCAE_CopyDataToMachineROM(mach, bootrom, sizeof(bootrom), HCAE_VECTORTABLE_ADDR + HCAE_VECTORTABLE_SIZE);
     
     HCAE_PrintMachine(mach);
     

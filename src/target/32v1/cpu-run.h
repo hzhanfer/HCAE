@@ -11,28 +11,56 @@
 #define get_pst_act(_core) ((_core)->sregs[HCAE_SREG_PST] & 1)
 
 
+typedef enum SyncExceptType { // synchronous exceptions
+    SYNCEXCEPT_MF = 0, // memory fault
+    SYNCEXCEPT_UI // unknown instruction
+} SyncExceptType;
+
+
 enum { // operand orders
-    OPER_ORDER_NN, // none none
-    OPER_ORDER_RN, // reg  none
-    OPER_ORDER_RR, // reg  reg
-    OPER_ORDER_RV, // reg  val
-    OPER_ORDER_VN  // val none
+    OPERORDER_NN = 0, // none none
+    OPERORDER_RN, // reg  none
+    OPERORDER_RR, // reg  reg
+    OPERORDER_RV, // reg  val
+    OPERORDER_VN, // val none
+    _OPERORDER_ENDOFLIST
 };
 
-typedef struct CPUInstr {
-    uint16_t opcode; // opcode, bit 0-10, 11 bits
-    uint8_t
-        oper_ord, // operand order, bit 8-10, 3 bits
-        val_len, // value(imm/addr) length, bit 14-15, 2 bits
-        rd, // rD, bit 16-19, 0-4 bits
-        rs // rS, bit 20-24, 0-4 bits
-    ;
-    uint32_t val; // value, bit 16-47/22-53, 0-31 bits
-} CPUInstr;
+typedef struct Instr {
+    uint16_t opcode;
+    uint8_t oper_ord, val_len, rd, rs;
+    uint32_t val;
+} Instr;
 
 
-static inline int mem_read(Memory* mem, hcae_cpu_word addr, hcae_cpu_word* dst) {
-    
+static inline int mem_read(Memory* mem, hcae_cpu_word addr, uint8_t* dst) {
+    if (addr > mem->total_size) return 0;
+    *dst = mem->block[addr];
+    return 1;
+}
+
+static inline int mem_read_arr(Memory* mem, hcae_cpu_word addr, uint8_t* dst, hcae_cpu_word cnt) {
+    hcae_cpu_word i;
+    for (i = 0; i < cnt; addr++, i++) {
+        if (addr > mem->total_size) return 0;
+        dst[i] = mem->block[addr];
+    }
+    return 1;
+}
+
+static inline int mem_write(Memory* mem, hcae_cpu_word addr, hcae_cpu_word b) {
+    if (addr > mem->total_size) return 0;
+    mem->block[addr] = b;
+    return 1;
+}
+
+static inline int mem_write_arr(Memory* mem, hcae_cpu_word addr, uint8_t* arr, hcae_cpu_word cnt) {
+    hcae_cpu_word i;
+    for (i = 0; i < cnt; addr++, i++) {
+        if (addr > mem->total_size) return 0;
+        mem->block[addr] = arr[i];
+    }
+    return 1;
 }
 
 

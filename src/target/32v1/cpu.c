@@ -80,6 +80,7 @@ int apply_cpu_settings(CPU* cpu) {
         CPUCore* core = &cpu->cores[i];
         
         core->cpu = cpu;
+        core->mem = cpu->mach->mem;
     }
     
     return 1;

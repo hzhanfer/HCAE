@@ -4,7 +4,6 @@
 
 #include <stdlib.h>
 #include "api/cpu.h"
-#include "cpu-run.h"
 
 
 #define CPU_NUM_REGS 16
@@ -13,18 +12,19 @@
 
 typedef struct HCAE_Machine HCAE_Machine;
 
+typedef struct Memory Memory;
+
 typedef struct CPU CPU;
 
 
 typedef struct CPUCore {
     CPU* cpu;
+    Memory* mem;
     
     hcae_cpu_word
         regs[CPU_NUM_REGS], // general
         sregs[CPU_NUM_SREGS] // system
     ;
-    
-    CPUInstr instr; // instruction buffer
 } CPUCore;
 
 
