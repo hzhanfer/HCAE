@@ -19,7 +19,7 @@ void cpu_core_syncexcept(CPUCore* core, SyncExceptType type) {
            (uint8_t*)mem->block + HCAE_VECTORTABLE_SYNCEXCEPT_ADDR,
            sizeof(core->regs[HCAE_REG_PC]));
     
-    printf("// Synchronous Exception #%x at 0x%08x\n", core->sregs[HCAE_SREG_EDAT], core->sregs[HCAE_SREG_ELR]);
+    printf("// Synchronous Exception (type: %x) at 0x%08x\n", core->sregs[HCAE_SREG_EDAT], core->sregs[HCAE_SREG_ELR]);
 }
 
 
@@ -104,6 +104,7 @@ static inline void step_cpu_core(CPUCore* core) {
         return;
     }
     
+    printf("%08x\t", instr.addr);
     ifun(core, &instr);
 }
 

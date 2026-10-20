@@ -7,13 +7,29 @@
 #include "core/hware/memory.h"
 
 
-#define set_pst_act(_core, _v) (_core)->sregs[HCAE_SREG_PST] |= (_v)
+#define set_pst_act(_core, _v) \
+    do { \
+        (_core)->sregs[HCAE_SREG_PST] = \
+            ((_core)->sregs[HCAE_SREG_PST] & ~1) | \
+            (!!(_v) & 1); \
+    } while(0)
+
 #define get_pst_act(_core) ((_core)->sregs[HCAE_SREG_PST] & 1)
+
+#define set_pst_irqm(_core, _v) \
+    do { \
+        (_core)->sregs[HCAE_SREG_PST] = \
+            ((_core)->sregs[HCAE_SREG_PST] & ~(1 << 1)) | \
+            ((!!(_v) & 1) << 1); \
+    } while(0)
+
+#define get_pst_irqm(_core) (((_core)->sregs[HCAE_SREG_PST] >> 1) & 1)
 
 
 typedef enum SyncExceptType { // synchronous exceptions
     SYNCEXCEPT_MF = 0, // memory fault
-    SYNCEXCEPT_UI // unknown instruction
+    SYNCEXCEPT_UI, // unknown instruction
+    SYNCEXCEPT_DBZ // division by zero
 } SyncExceptType;
 
 
