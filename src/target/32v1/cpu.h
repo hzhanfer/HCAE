@@ -21,7 +21,7 @@ typedef struct CPUCore {
     CPU* cpu;
     Memory* mem;
     
-    hcae_cpu_word
+    HCAE_CPUWord
         regs[CPU_NUM_REGS], // general
         sregs[CPU_NUM_SREGS] // system
     ;

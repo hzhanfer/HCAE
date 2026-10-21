@@ -13,8 +13,8 @@
 void cpu_core_syncexcept(CPUCore* core, SyncExceptType type) {
     Memory* mem = core->mem;
     
-    core->sregs[HCAE_SREG_ELR] = core->regs[HCAE_REG_PC]; // set ELR
-    core->sregs[HCAE_SREG_EDAT] = type;
+    core->sregs[HCAE_SREG_ILR] = core->regs[HCAE_REG_PC]; // set ELR
+    core->sregs[HCAE_SREG_IDAT] = type;
     memcpy((uint8_t*)&core->regs[HCAE_REG_PC],
            (uint8_t*)mem->block + HCAE_VECTORTABLE_SYNCEXCEPT_ADDR,
            sizeof(core->regs[HCAE_REG_PC]));
@@ -112,7 +112,8 @@ static inline void step_cpu(CPU* cpu) {
     for (size_t i = 0; i < cpu->core_cnt; i++) {
         CPUCore* core = &cpu->cores[i];
         
-        if (get_pst_act(core) != 1) continue; // not active
+        if ((core->sregs[HCAE_SREG_PST] & PST_ACT_MASK) != 1)
+            continue; // not active
         
         step_cpu_core(core);
     }
@@ -126,7 +127,8 @@ void run_cpu(CPU* cpu, size_t step_cnt) {
     memcpy((uint8_t*)&core0->regs[HCAE_REG_PC],
            (uint8_t*)mem->block + HCAE_VECTORTABLE_RESET_ADDR,
            sizeof(core0->regs[HCAE_REG_PC]));
-    set_pst_act(core0, 1); // set PST.ACT = 1
+    
+    core0->sregs[HCAE_SREG_PST] = (core0->sregs[HCAE_SREG_PST] & ~PST_ACT_MASK) | (1 << PST_ACT_SHIFT);
     
     if (step_cnt == HCAE_MACHINE_RUNINFINITE) {
         for (; mach->running;)

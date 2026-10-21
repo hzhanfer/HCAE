@@ -42,7 +42,7 @@ int apply_memory_settings(Memory* mem) {
         return 0;
     }
     
-    hcae_cpu_word total_size = mem->ram.size + mem->rom.size;
+    HCAE_CPUWord total_size = mem->ram.size + mem->rom.size;
     
     if (total_size < mem->ram.size) {
         set_error(HCAE_ERROR_MDSTB);
@@ -68,19 +68,19 @@ int apply_memory_settings(Memory* mem) {
 }
 
 
-void set_ram(Memory* mem, hcae_cpu_word bot, hcae_cpu_word size) {
+void set_ram(Memory* mem, HCAE_CPUWord bot, HCAE_CPUWord size) {
     mem->ram.top = bot + size;
     mem->ram.bot = bot;
     mem->ram.size = size;
 }
 
-void set_rom(Memory* mem, hcae_cpu_word bot, hcae_cpu_word size) {
+void set_rom(Memory* mem, HCAE_CPUWord bot, HCAE_CPUWord size) {
     mem->rom.top = bot + size;
     mem->rom.bot = bot;
     mem->rom.size = size;
 }
 
-void set_mmio(Memory* mem, hcae_cpu_word bot, hcae_cpu_word size) {
+void set_mmio(Memory* mem, HCAE_CPUWord bot, HCAE_CPUWord size) {
     mem->mmio.top = bot + size;
     mem->mmio.bot = bot;
     mem->mmio.size = size;

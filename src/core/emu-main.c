@@ -19,21 +19,21 @@ const uint8_t bootrom[] = {
     //  oooooooo    llrrrooo
     
     /* test #1 - data movement 
-      // 0b00000100, 0b00100000, 0x32,   // jmp #0x32 // for test 3
+      // 0b00000100, 0b00100000, 0x32,   // j.1 #0x32 // for test 3
     
-      0b00000101, 0b00011000,            // put r2, #0x10
+      0b00000101, 0b00011000,            // put.1 r2, #0x10
         0x02, 0x10,
     
-      0b00000101, 0b11011000, 0x00,      // put r0, #0x12345678
+      0b00000101, 0b11011000, 0x00,      // put.4 r0, #0x12345678
         0x78, 0x56, 0x34, 0x12,
       0b00000101, 0b00010000, 0x01,      // put r1, r0
       
-      0b00000101, 0b11011000,            // put r3, #0xaabbccdd
+      0b00000101, 0b11011000,            // put.4 r3, #0xaabbccdd
         0x03, 0xdd, 0xcc, 0xbb, 0xaa,
-      0b00000101, 0b01011000, 0x04,      // put r4, #0x4000
+      0b00000101, 0b01011000, 0x04,      // put.2 r4, #0x4000
         0x00, 0x40,
       0b00000011, 0b11010000, 0x34,      // st.4 [r4], r3
-      0b00000101, 0b01011000, 0x05,      // put r5, #0x4004
+      0b00000101, 0b01011000, 0x05,      // put.2 r5, #0x4004
         0x04, 0x40,
       0b00000011, 0b11011000, 0x05,      // st.4 [r5], #0xdeadbeef
         0xef, 0xbe, 0xad, 0xde,
@@ -41,39 +41,39 @@ const uint8_t bootrom[] = {
       0b00000010, 0b11010000, 0x56,      // ld.4 r6, [r5]
       0b00000010, 0b11010000, 0x47,      // ld.4 r7, [r4]
     
-      0b00000100, 0b00001000, 0x20,      // jmp r2
+      0b00000100, 0b00001000, 0x20,      // j r2
     */
     
     /* test 2 - arithmetic
-      0b00000101, 0b00011000, 0x00,      // put r0, #0xa
+      0b00000101, 0b00011000, 0x00,      // put.1 r0, #0xa
         0x0a,
-      0b00000101, 0b00011000, 0x01,      // put r1, #0xa
+      0b00000101, 0b00011000, 0x01,      // put.1 r1, #0xa
         0x0a,
       0b00001000, 0b00010000, 0x10,      // add r0, r1
     
-      0b00000101, 0b00011000, 0x02,      // put r2, #0xff
+      0b00000101, 0b00011000, 0x02,      // put.1 r2, #0xf0
         0xf0,
       0b00001001, 0b00010000, 0x12,      // sub r2, r1
     
-      0b00000101, 0b00011000, 0x03,      // put r3, #0x2
+      0b00000101, 0b00011000, 0x03,      // put.1 r3, #0x2
         0x02,
       0b00001010, 0b00010000, 0x33,      // mul r3, r3
     
-      0b00000101, 0b00011000, 0x04,      // put r4, #0x3
+      0b00000101, 0b00011000, 0x04,      // put.1 r4, #0x3
         0x0a,
-      0b00001011, 0b00011000, 0x04,      // div r4, #0x2
+      0b00001011, 0b00011000, 0x04,      // div.1 r4, #0x2
         0x02,
     
-      0b00001100, 0b00011000, 0x05,      // sdiv r5, #0x0 // dbz
+      0b00001100, 0b00011000, 0x05,      // sdiv.1 r5, #0x0 // dbz
         0x00,
     */
     
     /* test 3 - run test 1 on core 1
-      0b00000101, 0b00011000, 0x00,      // put r0, #0x01
+      0b00000101, 0b00011000, 0x00,      // put.1 r0, #0x01
         0x01,
-      0b00000101, 0b00011000, 0x01,      // put r1, #0x34
+      0b00000101, 0b00011000, 0x01,      // put.1 r1, #0x34
         0x13,
-      0b00000101, 0b00011000, 0x02,      // put r2, #0x11
+      0b00000101, 0b00011000, 0x02,      // put.1 r2, #0x11
         0b00010001,
       0b00001111, 0b00010000, 0x10,      // scrpc r1, r0
       0b00001110, 0b00001000, 0x20,      // scract r2
@@ -81,20 +81,29 @@ const uint8_t bootrom[] = {
     */
     
     /* test 4 - push/pop
-      0b00000101, 0b01011000,            // put sp, #0x4100
+      0b00000101, 0b01011000,            // put.2 sp, #0x4100
         0x0d, 0x00, 0x41,
-      0b00011000, 0b11100000,            // push #0x12345678
+      0b00011000, 0b11100000,            // push.4 #0x12345678
         0x78, 0x56, 0x34, 0x12,
-      0b00011000, 0b11100000,            // push #0xffffffff
+      0b00011000, 0b11100000,            // push.4 #0xffffffff
         0xff, 0xff, 0xff, 0xff,
-      0b00011000, 0b11100000,            // push #0x11111111
+      0b00011000, 0b11100000,            // push.4 #0x11111111
         0x11, 0x11, 0x11, 0x11,
       0b00011001, 0b00001000, 0x02,      // pop r2
       0b00011001, 0b00001000, 0x00,      // pop r0
       0b00011001, 0b00001000, 0x01,      // pop r1
     */
     
-      0b00011010, 0b00100000, 0x01,      // sirqm #0x1
+    /* test 5 - SIRQM test, and jump
+      0b00011010, 0b00100000, 0x01,      // sirqm.1 #0x1
+      0b00000101, 0b00011000, 0x01,      // put.1 r1, #0x7a
+        0x7a,
+      0b00000101, 0b00011000, 0x02,      // put.1 r2, #0x9f
+        0x9f,
+      0b00011011, 0b00010000, 0x21,      // cmp r1, r2
+      0b00100110, 0b00100000,            // j.mi.1
+        0x10,
+    */
     
     0x00 
 };
@@ -129,7 +138,7 @@ int main(void) {
     HCAE_CopyDataToMachineROM(mach, vectortable, HCAE_VECTORTABLE_SIZE, HCAE_VECTORTABLE_ADDR);
     HCAE_CopyDataToMachineROM(mach, bootrom, sizeof(bootrom), HCAE_VECTORTABLE_ADDR + HCAE_VECTORTABLE_SIZE);
     
-    HCAE_RunMachine(mach, 1);
+    HCAE_RunMachine(mach, 9);
     
     HCAE_PrintMachine(mach);
     

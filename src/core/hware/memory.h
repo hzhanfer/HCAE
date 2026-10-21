@@ -7,7 +7,7 @@
 
 
 typedef struct MemoryRegion {
-    hcae_cpu_word
+    HCAE_CPUWord
         top,
         bot,
         size
@@ -21,7 +21,7 @@ typedef struct Memory {
         rom,
         mmio
     ;
-    hcae_cpu_word total_size;
+    HCAE_CPUWord total_size;
     
     uint8_t* block; // allocated memory
 } Memory;
@@ -32,9 +32,9 @@ void destroy_memory(Memory*);
 
 int apply_memory_settings(Memory*);
 
-void set_ram(Memory*, hcae_cpu_word, hcae_cpu_word);
-void set_rom(Memory*, hcae_cpu_word, hcae_cpu_word);
-void set_mmio(Memory*, hcae_cpu_word, hcae_cpu_word);
+void set_ram(Memory*, HCAE_CPUWord, HCAE_CPUWord);
+void set_rom(Memory*, HCAE_CPUWord, HCAE_CPUWord);
+void set_mmio(Memory*, HCAE_CPUWord, HCAE_CPUWord);
 
 
 #endif 

@@ -102,7 +102,7 @@ void HCAE_SetMachineCPUCoreCount(HCAE_Machine* mach, size_t cnt) {
 }
 
 
-void HCAE_SetMachineRAM(HCAE_Machine* mach, hcae_cpu_word bot, hcae_cpu_word size) {
+void HCAE_SetMachineRAM(HCAE_Machine* mach, HCAE_CPUWord bot, HCAE_CPUWord size) {
     if (HCAE_GetError() != HCAE_ERROR_N) return;
     
     if (!mach) {
@@ -118,7 +118,7 @@ void HCAE_SetMachineRAM(HCAE_Machine* mach, hcae_cpu_word bot, hcae_cpu_word siz
     set_ram(mach->mem, bot, size);
 }
 
-void HCAE_SetMachineROM(HCAE_Machine* mach, hcae_cpu_word bot, hcae_cpu_word size) {
+void HCAE_SetMachineROM(HCAE_Machine* mach, HCAE_CPUWord bot, HCAE_CPUWord size) {
     if (HCAE_GetError() != HCAE_ERROR_N) return;
     
     if (!mach) {
@@ -134,7 +134,7 @@ void HCAE_SetMachineROM(HCAE_Machine* mach, hcae_cpu_word bot, hcae_cpu_word siz
     set_rom(mach->mem, bot, size);
 }
 
-void HCAE_SetMachineMMIO(HCAE_Machine* mach, hcae_cpu_word bot, hcae_cpu_word size) {
+void HCAE_SetMachineMMIO(HCAE_Machine* mach, HCAE_CPUWord bot, HCAE_CPUWord size) {
     if (HCAE_GetError() != HCAE_ERROR_N) return;
     
     if (!mach) {
@@ -154,7 +154,7 @@ int HCAE_CopyDataToMachineROM(
     HCAE_Machine* mach,
     const uint8_t* data,
     size_t size,
-    hcae_cpu_word pos) 
+    HCAE_CPUWord pos) 
 {
     if (HCAE_GetError() != HCAE_ERROR_N) return 0;
     

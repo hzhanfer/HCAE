@@ -25,11 +25,11 @@ int HCAE_ApplyMachineSettings(HCAE_Machine*);
 void HCAE_SetMachineCPUModel(HCAE_Machine*, HCAE_CPUModel*);
 void HCAE_SetMachineCPUCoreCount(HCAE_Machine*, size_t);
 
-void HCAE_SetMachineRAM(HCAE_Machine*, hcae_cpu_word, hcae_cpu_word);
-void HCAE_SetMachineROM(HCAE_Machine*, hcae_cpu_word, hcae_cpu_word);
-void HCAE_SetMachineMMIO(HCAE_Machine*, hcae_cpu_word, hcae_cpu_word);
+void HCAE_SetMachineRAM(HCAE_Machine*, HCAE_CPUWord, HCAE_CPUWord);
+void HCAE_SetMachineROM(HCAE_Machine*, HCAE_CPUWord, HCAE_CPUWord);
+void HCAE_SetMachineMMIO(HCAE_Machine*, HCAE_CPUWord, HCAE_CPUWord);
 
-int HCAE_CopyDataToMachineROM(HCAE_Machine* mach, const uint8_t*, size_t, hcae_cpu_word);
+int HCAE_CopyDataToMachineROM(HCAE_Machine* mach, const uint8_t*, size_t, HCAE_CPUWord);
 
 int HCAE_PrintMachine(HCAE_Machine*);
 

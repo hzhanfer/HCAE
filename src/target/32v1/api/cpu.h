@@ -6,8 +6,8 @@
 #include <stdint.h>
 
 
-typedef int32_t hcae_cpu_sword;
-typedef uint32_t hcae_cpu_word;
+typedef int32_t HCAE_CPUSWord;
+typedef uint32_t HCAE_CPUWord;
 
 #define HCAE_CPU_SWORD_MAX INT32_MAX
 #define HCAE_CPU_SWORD_MIN INT32_MIN
@@ -15,14 +15,17 @@ typedef uint32_t hcae_cpu_word;
 #define HCAE_CPU_WORD_MAX UINT32_MAX
 #define HCAE_CPU_WORD_MIN 0
 
+#define HCAE_CPU_WORD_BITS 32
+#define HCAE_CPU_SWORD_BITS 32
+
 
 typedef struct HCAE_CPUModel HCAE_CPUModel;
 
 
 enum {
     HCAE_SREG_PST = 0,
-    HCAE_SREG_EDAT = 1,
-    HCAE_SREG_ELR = 2,
+    HCAE_SREG_IDAT = 1,
+    HCAE_SREG_ILR = 2,
     
     HCAE_REG_PC = 15,
     HCAE_REG_LR = 14,
