@@ -3,7 +3,7 @@
 
 
 #include <stdint.h>
-#include "api/cpu.h"
+#include "cpu-api/cpu.h"
 
 
 typedef struct MemoryRegion {

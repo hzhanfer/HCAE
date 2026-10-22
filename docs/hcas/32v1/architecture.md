@@ -2,15 +2,13 @@
 
 The first 32-bit HCA specification.
 
-A simple 32-bit architecture that covers most of the essential things about a CPU, such as a full ISA, interrupt-handling, core execution management, and many more.
+A simple architecture that covers most of the essential things a CPU needs, such as a full ISA, interrupt-handling, core execution management, arithmetics, bitwise/logical, memory mangement, etc..
 
 The ISA can be found [here](isa.md).
 
 ## Registers
 
-It has 13 general-purpose registers, 3 special-purpose registers, and 3 system-registers:
-
-(System-registers are a different set of registers.)
+It has 13 general-purpose registers, 3 special-purpose(counts as GPRs) registers, and 3 system-registers:
 
  - r0-r12: GPRs
  - r13: Stack Pointer (SP)
@@ -20,7 +18,7 @@ It has 13 general-purpose registers, 3 special-purpose registers, and 3 system-r
  - IDAT (sr1): Interrupt Data, stores information describing the recent exception.
  - ILR (sr2): Interrupt Link Register, stores the address of the instruction associated with the exception.
 
-### SP
+### SP Rules
 
 The Stack Pointer has no enforced rules such as alignment-rules, it must be valid and set by software.
 
@@ -63,5 +61,5 @@ The vector table resides at address 0x00000000 in ROM. Each entry contains a 32-
 
 ## Exception Handling
 
-When a synchronous exception occurs, the CPU saves the address of the faulting instruction in ELR, records the exception cause in EDAT, and transfers execution to the handler address stored at 0x0000000C.
-The exception handler may inspect EDAT and ELR to determine the cause of the exception and decide how to proceed.
+When a synchronous exception occurs, the CPU saves the address of the faulting instruction in ILR, records the exception cause in IDAT, and transfers execution to the Synchronous Exception handler.
+The exception handler may inspect IDAT and ILR to determine the cause of the exception and decide how to proceed.

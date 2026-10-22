@@ -3,11 +3,7 @@
 
 
 #include <stdlib.h>
-#include "api/cpu.h"
-
-
-#define CPU_NUM_REGS 16
-#define CPU_NUM_SREGS 3
+#include "cpu-api/cpu.h"
 
 
 typedef struct HCAE_Machine HCAE_Machine;
@@ -21,9 +17,9 @@ typedef struct CPUCore {
     CPU* cpu;
     Memory* mem;
     
-    HCAE_CPUWord
-        regs[CPU_NUM_REGS], // general
-        sregs[CPU_NUM_SREGS] // system
+    HCAE_32V1Word
+        regs[_HCAE_32V1_RR_ENDOFLIST], // general
+        sregs[_HCAE_32V1_SR_ENDOFLIST] // system
     ;
 } CPUCore;
 

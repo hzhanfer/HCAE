@@ -4,13 +4,13 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-#define HCAE_TARGET_CPU_HEADER "api/cpu.h"
+#define HCAE_TARGET_CPU_HEADER "cpu-api/cpu.h"
 #include "hcae/machine.h"
 #include "cpu.h"
 #include "core/hware/memory.h"
 
 
-#define HCAE_MACHINE_RUNINFINITE (size_t)-1
+#define HCAE_RUNINFINITE -1
 
 
 struct HCAE_Machine {

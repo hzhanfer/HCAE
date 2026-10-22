@@ -6,7 +6,7 @@
 #include "core/hware/memory.h"
 
 
-HCAE_CPUModel* HCAE_CreateCPUModel(void) {
+HCAE_CPUModel* HCAE_Create32V1Model(void) {
     HCAE_CPUModel* model = calloc(1, sizeof(HCAE_CPUModel));
     if (!model) {
         set_error(HCAE_ERROR_OOM);
@@ -16,16 +16,16 @@ HCAE_CPUModel* HCAE_CreateCPUModel(void) {
     return model;
 }
 
-void HCAE_DestroyCPUModel(HCAE_CPUModel* model) {
+void HCAE_Destroy32V1Model(HCAE_CPUModel* model) {
     free(model);
 }
 
 
-void HCAE_SetCPUModelName(HCAE_CPUModel* model, const char* name) {
+void HCAE_Set32V1ModelName(HCAE_CPUModel* model, const char* name) {
     model->name = name;
 }
 
-void HCAE_SetCPUModelMaxCoreCount(HCAE_CPUModel* model, size_t cnt) {
+void HCAE_Set32V1ModelMaxCoreCount(HCAE_CPUModel* model, size_t cnt) {
     model->max_core_cnt = cnt;
 }
 
@@ -51,6 +51,22 @@ CPU* create_cpu(HCAE_Machine* mach) {
 void destroy_cpu(CPU* cpu) {
     if (cpu->cores) free(cpu->cores);
     free(cpu);
+}
+
+
+int get_cpu_core_reg(CPU* cpu, size_t core_id, HCAE_32V1RegisterIndex reg_idx, HCAE_CPUWord* dst) {
+    if (core_id >= cpu->core_cnt) {
+        set_error(HCAE_ERROR_ICCC);
+        return 0;
+    }
+    
+    if (reg_idx >= _HCAE_32V1_RR_ENDOFLIST) {
+        set_error(HCAE_ERROR_IRI);
+        return 0;
+    }
+    
+    *dst = cpu->cores[core_id].regs[]
+    return 1;
 }
 
 

@@ -4,7 +4,12 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+
+#ifndef HCAE_TARGET_CPU_HEADER
+#error "Required macro 'HCAE_TARGET_CPU_HEADER' is not defined"
+#else
 #include HCAE_TARGET_CPU_HEADER
+#endif
 
 
 #define HCAE_MIN_RAM_SIZE 0x20
@@ -30,8 +35,6 @@ void HCAE_SetMachineROM(HCAE_Machine*, HCAE_CPUWord, HCAE_CPUWord);
 void HCAE_SetMachineMMIO(HCAE_Machine*, HCAE_CPUWord, HCAE_CPUWord);
 
 int HCAE_CopyDataToMachineROM(HCAE_Machine* mach, const uint8_t*, size_t, HCAE_CPUWord);
-
-int HCAE_PrintMachine(HCAE_Machine*);
 
 int HCAE_RunMachine(HCAE_Machine*, size_t);
 

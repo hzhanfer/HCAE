@@ -178,7 +178,7 @@ int HCAE_CopyDataToMachineROM(
 }
 
 
-int HCAE_PrintMachine(HCAE_Machine* mach) {
+int HCAE_RunMachine(HCAE_Machine* mach, size_t step_cnt) {
     if (!mach) {
         set_error(HCAE_ERROR_II);
         return 0;
@@ -186,73 +186,6 @@ int HCAE_PrintMachine(HCAE_Machine* mach) {
     
     if (!mach->settings_applied) {
         set_error(HCAE_ERROR_ORSTBA);
-        return 0;
-    }
-    
-    printf(
-        "Machine {\n"
-        "  CPU {\n"
-        "    Model {\n"
-        "      Name: %s,\n"
-        "      Maximum Core Count: %zu\n"
-        "    },\n"
-        "    Core Count: %zu,\n"
-        "    Cores [\n",
-        mach->cpu->model->name,
-        mach->cpu->model->max_core_cnt,
-        mach->cpu->core_cnt
-    );
-    
-    for (size_t i = 0; i < mach->cpu->core_cnt; i++) {
-        CPUCore* core = &mach->cpu->cores[i];
-        
-        printf(
-            "      %zu {\n"
-            "        PST:  0x%08x, EDAT:  0x%08x, ELR:  0x%08x,\n"
-            "        PC:   0x%08x, LR:    0x%08x, SP:   0x%08x,\n"
-            "        R00:  0x%08x, R01:   0x%08x, R02:  0x%08x,\n"
-            "        R03:  0x%08x, R04:   0x%08x, R05:  0x%08x,\n"
-            "        R06:  0x%08x, R07:   0x%08x, R08:  0x%08x,\n"
-            "        R09:  0x%08x\n"
-            "      }",
-            i,
-            core->sregs[HCAE_SREG_PST], core->sregs[HCAE_SREG_EDAT], core->sregs[HCAE_SREG_ELR],
-            core->regs[HCAE_REG_PC], core->regs[HCAE_REG_LR], core->regs[HCAE_REG_SP],
-            core->regs[0], core->regs[1], core->regs[2], core->regs[3],
-            core->regs[4], core->regs[5], core->regs[6], core->regs[7],
-            core->regs[8], core->regs[9]
-        );
-        
-        if (i + 1 == mach->cpu->core_cnt) {
-            printf("\n");
-        } else {
-            printf(",\n");
-        }
-    }
-    
-    printf(
-        "    ]\n"
-        "  },\n"
-        "  Memory {\n"
-        "    RAM: 0x%08x-0x%08x 0x%08x,\n"
-        "    ROM: 0x%08x-0x%08x 0x%08x,\n"
-        "    MMIO: 0x%08x-0x%08x 0x%08x,\n"
-        "    Total Size: %08x\n"
-        "  }\n"
-        "}\n",
-        mach->mem->ram.bot, mach->mem->ram.top, mach->mem->ram.size,
-        mach->mem->rom.bot, mach->mem->rom.top, mach->mem->rom.size,
-        mach->mem->mmio.bot, mach->mem->mmio.top, mach->mem->mmio.size,
-        mach->mem->total_size
-    );
-    
-    return 1;
-}
-
-
-int HCAE_RunMachine(HCAE_Machine* mach, size_t step_cnt) {
-    if (!mach) {
-        set_error(HCAE_ERROR_II);
         return 0;
     }
     
@@ -261,14 +194,24 @@ int HCAE_RunMachine(HCAE_Machine* mach, size_t step_cnt) {
         return 0;
     }
     
-    if (!mach->settings_applied) {
-        set_error(HCAE_ERROR_ORSTBA);
-        return 0;
-    }
-    
     mach->running = true;
     
     run_cpu(mach->cpu, step_cnt);
     
     return 1;
+}
+
+
+int HCAE_GetMachineCPUCoreRegister(HCAE_Machine* mach, size_t core_id, HCAE_CPURegisterIndex reg_idx, HCAE_CPUWord* dst) {
+    if (!mach) {
+        set_error(HCAE_ERROR_II);
+        return 0;
+    }
+    
+    if (!mach->settings_applied) {
+        set_error(HCAE_ERROR_ORSTBA);
+        return 0;
+    }
+    
+    return get_cpu_core_reg(mach->cpu, core_id, reg_idx, dst);
 }
