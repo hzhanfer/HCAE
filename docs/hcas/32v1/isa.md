@@ -2,28 +2,25 @@
 
 Variable Length (2–7 bytes)
 
-1. First Byte
+1. Bytes 1-2 (2-byte Header)
 
- - Bits 0–7: Opcode (lower 8 bits)
-
-2. Second Byte
-
- - Bits 8–10: Opcode (upper 3 bits)
- - Bits 11–13: Operand Order (3 bits)
+ - Bits 0-10: Opcode (11 bits)
+ - Bits 11-13: Operand Order (3 bits)
  - Bits 14-15: Value Length (2 bits)
 
-3. Third Byte (Register Numbers)
+2. Bytes 3-7 (0-5 bytes long Body)
 
-This field only appears when the Operand Order is RN, RR, or RV.
+The body only appears if the Operand Order is RN, RR, RV or VN.
 
- - Bits 16-19: rDestination (rD)
- - Bits 20-24: rSource (rS) (ignored for RN and RV)
+For RN, RR, and RV, byte 3 (Registers) contains:
+ - Bits 0-3: rD, Destination (4 bits)
+ - Bits 4-7: rS, Source (4 bits)
 
-4. Third/Fourth to Sixth Bytes
+For VN, byte 3-6 (Value) contains:
+ - Bits 7-31: Value (8-32 bits)
 
-This field only appears when the Operand Order is VN, or RV.
+For RV, byte 3 serves as the Registers, byte 4-7 serve as the Value.
 
- - Bits 16–47 for when the Operand Order is VN, or bits 22-53 for when the Operand Order is RV: Value (0–32 bits, depending on Value Length)
 
 ## Operand Order Values
 
@@ -157,6 +154,6 @@ Divides rD and rS/#imm then stores the result in rD.
 
 ``cact``
 
-Sets the PST:ACT of the current core to 0.
+Sets the PST.ACT of the current core to 0.
 
 14. 0b00000001101, ``scract rS``:

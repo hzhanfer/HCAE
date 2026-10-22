@@ -16,8 +16,8 @@ typedef enum HCAE_32V1Opcode {
     HCAE_32V1_OPCODE_MUL, // multiply
     HCAE_32V1_OPCODE_DIV, // division
     HCAE_32V1_OPCODE_SDIV, // signed division
-    HCAE_32V1_OPCODE_CACT, // clear PST:ACT
-    HCAE_32V1_OPCODE_SCRACT, // set core PST:ACT
+    HCAE_32V1_OPCODE_CACT, // clear PST.ACT
+    HCAE_32V1_OPCODE_SCRACT, // set core PST.ACT
     HCAE_32V1_OPCODE_SCRPC, // set core PC
     HCAE_32V1_OPCODE_AND, // bitwise and
     HCAE_32V1_OPCODE_OR, // bitwise or

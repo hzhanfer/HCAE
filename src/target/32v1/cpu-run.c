@@ -110,7 +110,7 @@ static inline void step_cpu(CPU* cpu) {
     for (size_t i = 0; i < cpu->core_cnt; i++) {
         CPUCore* core = &cpu->cores[i];
         
-        if ((core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_ACT_MASK) != 1)
+        if ((core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST.ACT_MASK) != 1)
             continue; // not active
         
         step_cpu_core(core);
@@ -126,7 +126,7 @@ void run_cpu(CPU* cpu, size_t step_cnt) {
            (uint8_t*)mem->block + HCAE_32V1_VECTTAB_RESET_ADDR,
            sizeof(core0->regs[HCAE_32V1_SPR_PC]));
     
-    core0->sregs[HCAE_32V1_SR_PST] = (core0->sregs[HCAE_32V1_SR_PST] & ~HCAE_32V1_PST_ACT_MASK) | (1 << HCAE_32V1_PST_ACT_SHIFT);
+    core0->sregs[HCAE_32V1_SR_PST] = (core0->sregs[HCAE_32V1_SR_PST] & ~HCAE_32V1_PST.ACT_MASK) | (1 << HCAE_32V1_PST.ACT_SHIFT);
     
     if (step_cnt == (size_t)HCAE_RUNINFINITE) {
         for (; mach->running;)

@@ -168,7 +168,7 @@ static void sdiv_rv(CPUCore* core, Instr* instr) {
 static void cact_nn(CPUCore* core, Instr* instr) {
     (void)instr;
     
-    core->sregs[HCAE_32V1_SR_PST] &= ~HCAE_32V1_PST_ACT_MASK;
+    core->sregs[HCAE_32V1_SR_PST] &= ~HCAE_32V1_PST.ACT_MASK;
 }
 
 
@@ -180,7 +180,7 @@ static void scract_rn(CPUCore* core, Instr* instr) {
     
     uint8_t act = (w >> 4) & 0x1; // get bit 4
     
-    core->sregs[HCAE_32V1_SR_PST] = (core->regs[HCAE_32V1_SR_PST] & ~HCAE_32V1_PST_ACT_MASK) | (act << HCAE_32V1_PST_ACT_SHIFT);
+    core->sregs[HCAE_32V1_SR_PST] = (core->regs[HCAE_32V1_SR_PST] & ~HCAE_32V1_PST.ACT_MASK) | (act << HCAE_32V1_PST.ACT_SHIFT);
 }
 
 
