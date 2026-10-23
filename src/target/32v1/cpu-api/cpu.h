@@ -6,6 +6,9 @@
 #include <stdint.h>
 
 
+typedef struct HCAE_Machine HCAE_Machine;
+
+
 typedef int32_t HCAE_32V1SWord;
 typedef uint32_t HCAE_32V1Word;
 
@@ -20,19 +23,21 @@ typedef HCAE_32V1Word HCAE_CPUWord;
 #define HCAE_32V1_WORD_BITS 32
 #define HCAE_32V1_SWORD_BITS 32
 
-#define HCAE_32V1_PST.ACT_SHIFT 0
+#define HCAE_32V1_PST_ACT_SHIFT 0
 #define HCAE_32V1_PST_IRQM_SHIFT 1
-#define HCAE_32V1_PST_CMP_N_SHIFT 2
-#define HCAE_32V1_PST_CMP_Z_SHIFT 3
-#define HCAE_32V1_PST_CMP_C_SHIFT 4
-#define HCAE_32V1_PST_CMP_V_SHIFT 5
+#define HCAE_32V1_PST_CONDF_SHIFT 2
+#define HCAE_32V1_PST_CONDF_N_SHIFT 2
+#define HCAE_32V1_PST_CONDF_Z_SHIFT 3
+#define HCAE_32V1_PST_CONDF_C_SHIFT 4
+#define HCAE_32V1_PST_CONDF_V_SHIFT 5
 
-#define HCAE_32V1_PST.ACT_MASK     (0x1 << HCAE_32V1_PST.ACT_SHIFT)
+#define HCAE_32V1_PST_ACT_MASK     (0x1 << HCAE_32V1_PST_ACT_SHIFT)
 #define HCAE_32V1_PST_IRQM_MASK    (0x1 << HCAE_32V1_PST_IRQM_SHIFT)
-#define HCAE_32V1_PST_CMP_N_MASK   (0x1 << HCAE_32V1_PST_CMP_N_SHIFT)
-#define HCAE_32V1_PST_CMP_Z_MASK   (0x1 << HCAE_32V1_PST_CMP_Z_SHIFT)
-#define HCAE_32V1_PST_CMP_C_MASK   (0x1 << HCAE_32V1_PST_CMP_C_SHIFT)
-#define HCAE_32V1_PST_CMP_V_MASK   (0x1 << HCAE_32V1_PST_CMP_V_SHIFT)
+#define HCAE_32V1_PST_CONDF_MASK     (0xf << HCAE_32V1_PST_CONDF_SHIFT)
+#define HCAE_32V1_PST_CONDF_N_MASK   (0x1 << HCAE_32V1_PST_CONDF_N_SHIFT)
+#define HCAE_32V1_PST_CONDF_Z_MASK   (0x1 << HCAE_32V1_PST_CONDF_Z_SHIFT)
+#define HCAE_32V1_PST_CONDF_C_MASK   (0x1 << HCAE_32V1_PST_CONDF_C_SHIFT)
+#define HCAE_32V1_PST_CONDF_V_MASK   (0x1 << HCAE_32V1_PST_CONDF_V_SHIFT)
 
 
 typedef enum HCAE_32V1SyncException { // synchronous exceptions
@@ -59,15 +64,15 @@ typedef struct HCAE_32V1Model HCAE_32V1Model;
 
 typedef enum HCAE_32V1RegisterIndex {
     // special-purpose registers
-    HCAE_32V1_SPR_SP = 13,
-    HCAE_32V1_SPR_PC,
-    HCAE_32V1_SPR_LR,
+    HCAE_32V1_SP = 13,
+    HCAE_32V1_PC,
+    HCAE_32V1_LR,
     _HCAE_32V1_RR_ENDOFLIST, // end of regular-registers list (includes SPRs)
     
     // system registers
-    HCAE_32V1_SR_PST = 0,
-    HCAE_32V1_SR_IDAT,
-    HCAE_32V1_SR_ILR,
+    HCAE_32V1_PST = 0,
+    HCAE_32V1_IDAT,
+    HCAE_32V1_ILR,
     _HCAE_32V1_SR_ENDOFLIST,
 } HCAE_32V1RegisterIndex;
 
@@ -85,7 +90,13 @@ HCAE_32V1Model* HCAE_Create32V1Model(void);
 void HCAE_Destroy32V1Model(HCAE_32V1Model*);
 
 void HCAE_Set32V1ModelName(HCAE_32V1Model*, const char*);
+void HCAE_Set32V1ModelDefaultCoreCount(HCAE_CPUModel*, size_t);
 void HCAE_Set32V1ModelMaxCoreCount(HCAE_32V1Model*, size_t);
 
+int HCAE_GetMachine32V1Register(HCAE_Machine*, size_t, HCAE_32V1RegisterIndex, HCAE_32V1Word*);
+int HCAE_GetMachine32V1SystemRegister(HCAE_Machine*, size_t, HCAE_32V1RegisterIndex, HCAE_32V1Word*);
+
+int HCAE_GetMachine32V1Registers(HCAE_Machine*, size_t, HCAE_32V1Word*);
+int HCAE_GetMachine32V1SystemRegisters(HCAE_Machine*, size_t, HCAE_32V1Word*);
 
 #endif

@@ -16,6 +16,11 @@
 #define HCAE_MIN_ROM_SIZE 0x50
 
 
+#define HCAE_USE_DEFAULT_CPUCORECNT 0
+
+#define HCAE_RUNINFINITE ((size_t)-1)
+
+
 typedef struct HCAE_CPUModel HCAE_CPUModel; 
 
 

@@ -36,7 +36,10 @@ struct CPU {
 struct HCAE_CPUModel {
     const char* name;
     
-    size_t max_core_cnt;
+    size_t
+        default_core_cnt,
+        max_core_cnt
+    ;
 };
 
 

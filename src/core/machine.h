@@ -10,9 +10,6 @@
 #include "core/hware/memory.h"
 
 
-#define HCAE_RUNINFINITE -1
-
-
 struct HCAE_Machine {
     bool
         running,

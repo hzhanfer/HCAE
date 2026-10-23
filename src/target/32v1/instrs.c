@@ -19,7 +19,7 @@ static void ld_rr(CPUCore* core, Instr* instr) {
                       (uint8_t*)&w,
                       instr->val_len)
     ) {
-        core->regs[HCAE_32V1_SPR_PC] = instr->addr;
+        core->regs[HCAE_32V1_PC] = instr->addr;
         cpu_core_syncexcept(core, HCAE_32V1_SYNCEXCEPT_MF);
         return;
     }
@@ -34,7 +34,7 @@ static void st_rr(CPUCore* core, Instr* instr) {
                        (uint8_t*)&core->regs[instr->rs],
                        instr->val_len)
     ) {
-        core->regs[HCAE_32V1_SPR_PC] = instr->addr;
+        core->regs[HCAE_32V1_PC] = instr->addr;
         cpu_core_syncexcept(core, HCAE_32V1_SYNCEXCEPT_MF);
         return;
     }
@@ -46,7 +46,7 @@ static void st_rv(CPUCore* core, Instr* instr) {
                        (uint8_t*)&instr->val,
                        instr->val_len)
     ) {
-        core->regs[HCAE_32V1_SPR_PC] = instr->addr;
+        core->regs[HCAE_32V1_PC] = instr->addr;
         cpu_core_syncexcept(core, HCAE_32V1_SYNCEXCEPT_MF);
         return;
     }
@@ -54,11 +54,11 @@ static void st_rv(CPUCore* core, Instr* instr) {
 
 
 static void j_rn(CPUCore* core, Instr* instr) {
-    core->regs[HCAE_32V1_SPR_PC] = core->regs[instr->rs];
+    core->regs[HCAE_32V1_PC] = core->regs[instr->rs];
 }
 
 static void j_vn(CPUCore* core, Instr* instr) {
-    core->regs[HCAE_32V1_SPR_PC] += instr->val; // PC relative jump
+    core->regs[HCAE_32V1_PC] += instr->val; // PC relative jump
 }
 
 
@@ -72,23 +72,23 @@ static void put_rv(CPUCore* core, Instr* instr) {
 
 
 static void jl_rn(CPUCore* core, Instr* instr) {
-    core->regs[HCAE_32V1_SPR_LR] = core->regs[HCAE_32V1_SPR_PC];
-    core->regs[HCAE_32V1_SPR_PC] = core->regs[instr->rs];
+    core->regs[HCAE_32V1_LR] = core->regs[HCAE_32V1_PC];
+    core->regs[HCAE_32V1_PC] = core->regs[instr->rs];
 }
 
 static void jl_vn(CPUCore* core, Instr* instr) {
-    core->regs[HCAE_32V1_SPR_LR] = core->regs[HCAE_32V1_SPR_PC];
-    core->regs[HCAE_32V1_SPR_PC] += instr->val; // PC relative jump
+    core->regs[HCAE_32V1_LR] = core->regs[HCAE_32V1_PC];
+    core->regs[HCAE_32V1_PC] += instr->val; // PC relative jump
 }
 
 
 static void ret_nn(CPUCore* core, Instr* instr) {
     (void)instr;
-    core->regs[HCAE_32V1_SPR_PC] = core->regs[HCAE_32V1_SPR_LR];
+    core->regs[HCAE_32V1_PC] = core->regs[HCAE_32V1_LR];
 }
 
 static void ret_rn(CPUCore* core, Instr* instr) {
-    core->regs[HCAE_32V1_SPR_PC] = core->regs[instr->rs];
+    core->regs[HCAE_32V1_PC] = core->regs[instr->rs];
 }
 
 
@@ -121,7 +121,7 @@ static void mul_rv(CPUCore* core, Instr* instr) {
 
 static void div_rr(CPUCore* core, Instr* instr) {
     if (core->regs[instr->rs] == 0) {
-        core->regs[HCAE_32V1_SPR_PC] = instr->addr;
+        core->regs[HCAE_32V1_PC] = instr->addr;
         cpu_core_syncexcept(core, HCAE_32V1_SYNCEXCEPT_DBZ);
         return;
     }
@@ -131,7 +131,7 @@ static void div_rr(CPUCore* core, Instr* instr) {
 
 static void div_rv(CPUCore* core, Instr* instr) {
     if (instr->val == 0) {
-        core->regs[HCAE_32V1_SPR_PC] = instr->addr;
+        core->regs[HCAE_32V1_PC] = instr->addr;
         cpu_core_syncexcept(core, HCAE_32V1_SYNCEXCEPT_DBZ);
         return;
     }
@@ -142,7 +142,7 @@ static void div_rv(CPUCore* core, Instr* instr) {
 
 static void sdiv_rr(CPUCore* core, Instr* instr) {
     if (core->regs[instr->rs] == 0) {
-        core->regs[HCAE_32V1_SPR_PC] = instr->addr;
+        core->regs[HCAE_32V1_PC] = instr->addr;
         cpu_core_syncexcept(core, HCAE_32V1_SYNCEXCEPT_DBZ);
         return;
     }
@@ -154,7 +154,7 @@ static void sdiv_rr(CPUCore* core, Instr* instr) {
 
 static void sdiv_rv(CPUCore* core, Instr* instr) {
     if (instr->val == 0) {
-        core->regs[HCAE_32V1_SPR_PC] = instr->addr;
+        core->regs[HCAE_32V1_PC] = instr->addr;
         cpu_core_syncexcept(core, HCAE_32V1_SYNCEXCEPT_DBZ);
         return;
     }
@@ -168,7 +168,7 @@ static void sdiv_rv(CPUCore* core, Instr* instr) {
 static void cact_nn(CPUCore* core, Instr* instr) {
     (void)instr;
     
-    core->sregs[HCAE_32V1_SR_PST] &= ~HCAE_32V1_PST.ACT_MASK;
+    core->sregs[HCAE_32V1_PST] &= ~HCAE_32V1_PST_ACT_MASK;
 }
 
 
@@ -180,7 +180,7 @@ static void scract_rn(CPUCore* core, Instr* instr) {
     
     uint8_t act = (w >> 4) & 0x1; // get bit 4
     
-    core->sregs[HCAE_32V1_SR_PST] = (core->regs[HCAE_32V1_SR_PST] & ~HCAE_32V1_PST.ACT_MASK) | (act << HCAE_32V1_PST.ACT_SHIFT);
+    core->sregs[HCAE_32V1_PST] = (core->regs[HCAE_32V1_PST] & ~HCAE_32V1_PST_ACT_MASK) | (act << HCAE_32V1_PST_ACT_SHIFT);
 }
 
 
@@ -188,7 +188,7 @@ static void scrpc_rr(CPUCore* core, Instr* instr) {
     uint8_t core_id = core->regs[instr->rd] & 0xf; // get bits 0-3
     if (core_id >= core->cpu->core_cnt) return; // ignore invalid core id
     
-    core->cpu->cores[core_id].regs[HCAE_32V1_SPR_PC] = core->regs[instr->rs]; // set PC
+    core->cpu->cores[core_id].regs[HCAE_32V1_PC] = core->regs[instr->rs]; // set PC
 }
 
 
@@ -279,15 +279,15 @@ static void rotr_rv(CPUCore* core, Instr* instr) {
 
 
 static void inline push(CPUCore* core, HCAE_32V1Word addr, HCAE_32V1Word w) {
-    core->regs[HCAE_32V1_SPR_SP] -= sizeof(w);
+    core->regs[HCAE_32V1_SP] -= sizeof(w);
     
     if (!mem_write_arr(core->mem,
-                       core->regs[HCAE_32V1_SPR_SP],
+                       core->regs[HCAE_32V1_SP],
                        (uint8_t*)&w,
                        sizeof(w))
     ) {
-        core->regs[HCAE_32V1_SPR_SP] += sizeof(w);
-        core->regs[HCAE_32V1_SPR_PC] = addr;
+        core->regs[HCAE_32V1_SP] += sizeof(w);
+        core->regs[HCAE_32V1_PC] = addr;
         cpu_core_syncexcept(core, HCAE_32V1_SYNCEXCEPT_MF);
         return;
     }
@@ -305,46 +305,46 @@ static void push_vn(CPUCore* core, Instr* instr) {
 static void pop_nn(CPUCore* core, Instr* instr) {
     (void)instr;
     
-    core->regs[HCAE_32V1_SPR_SP] += sizeof(HCAE_32V1Word);
+    core->regs[HCAE_32V1_SP] += sizeof(HCAE_32V1Word);
 }
 
 static void pop_rn(CPUCore* core, Instr* instr) {
     if (!mem_read_arr(core->mem,
-                      core->regs[HCAE_32V1_SPR_SP],
+                      core->regs[HCAE_32V1_SP],
                       (uint8_t*)&core->regs[instr->rd],
                       sizeof(HCAE_32V1Word))
     ) {
-        core->regs[HCAE_32V1_SPR_PC] = instr->addr;
+        core->regs[HCAE_32V1_PC] = instr->addr;
         cpu_core_syncexcept(core, HCAE_32V1_SYNCEXCEPT_MF); 
         return;
     }
     
-    core->regs[HCAE_32V1_SPR_SP] += sizeof(HCAE_32V1Word);
+    core->regs[HCAE_32V1_SP] += sizeof(HCAE_32V1Word);
 }
 
 
 static void sirqm_rn(CPUCore* core, Instr* instr) {
-    core->sregs[HCAE_32V1_SR_PST] = (core->sregs[HCAE_32V1_SR_PST] & ~HCAE_32V1_PST_IRQM_MASK) | ((core->regs[instr->rs] & 0x1) << HCAE_32V1_PST_IRQM_SHIFT);
+    core->sregs[HCAE_32V1_PST] = (core->sregs[HCAE_32V1_PST] & ~HCAE_32V1_PST_IRQM_MASK) | ((core->regs[instr->rs] & 0x1) << HCAE_32V1_PST_IRQM_SHIFT);
 }
 
 static void sirqm_vn(CPUCore* core, Instr* instr) {
-    core->sregs[HCAE_32V1_SR_PST] = (core->sregs[HCAE_32V1_SR_PST] & ~HCAE_32V1_PST_IRQM_MASK) | ((instr->val & 0x1) << HCAE_32V1_PST_IRQM_SHIFT);
+    core->sregs[HCAE_32V1_PST] = (core->sregs[HCAE_32V1_PST] & ~HCAE_32V1_PST_IRQM_MASK) | ((instr->val & 0x1) << HCAE_32V1_PST_IRQM_SHIFT);
 }
 
 
 static inline HCAE_32V1Word cmp(CPUCore* core, HCAE_32V1Word a, HCAE_32V1Word b) {
     HCAE_32V1Word r = a - b;
     
-    HCAE_32V1Word pst = core->sregs[HCAE_32V1_SR_PST];
+    HCAE_32V1Word pst = core->sregs[HCAE_32V1_PST];
 
-    pst &= ~(HCAE_32V1_PST_CMP_N_MASK | HCAE_32V1_PST_CMP_Z_MASK | HCAE_32V1_PST_CMP_C_MASK | HCAE_32V1_PST_CMP_V_MASK);
+    pst &= ~(HCAE_32V1_PST_CONDF_N_MASK | HCAE_32V1_PST_CONDF_Z_MASK | HCAE_32V1_PST_CONDF_C_MASK | HCAE_32V1_PST_CONDF_V_MASK);
     
-    pst |= (((r >> (HCAE_32V1_WORD_BITS - 1)) & 0x1) << HCAE_32V1_PST_CMP_N_SHIFT);
-    pst |= ((r == 0) << HCAE_32V1_PST_CMP_Z_SHIFT);
-    pst |= ((a >= b) << HCAE_32V1_PST_CMP_C_SHIFT);
-    pst |= ((((a ^ b) & (a ^ r)) >> (HCAE_32V1_WORD_BITS - 1) & 0x1) << HCAE_32V1_PST_CMP_V_SHIFT);
+    pst |= (((r >> (HCAE_32V1_WORD_BITS - 1)) & 0x1) << HCAE_32V1_PST_CONDF_N_SHIFT);
+    pst |= ((r == 0) << HCAE_32V1_PST_CONDF_Z_SHIFT);
+    pst |= ((a >= b) << HCAE_32V1_PST_CONDF_C_SHIFT);
+    pst |= ((((a ^ b) & (a ^ r)) >> (HCAE_32V1_WORD_BITS - 1) & 0x1) << HCAE_32V1_PST_CONDF_V_SHIFT);
     
-    core->sregs[HCAE_32V1_SR_PST] = pst;
+    core->sregs[HCAE_32V1_PST] = pst;
     
     return r;
 }
@@ -359,132 +359,132 @@ static void cmp_rv(CPUCore* core, Instr* instr) {
 
 
 static void jlo_vn(CPUCore* core, Instr* instr) {
-    if ((core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_C_MASK) == 0)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+    if ((core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_C_MASK) == 0)
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jhs_vn(CPUCore* core, Instr* instr) {
-    if (core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_C_MASK)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+    if (core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_C_MASK)
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jhi_vn(CPUCore* core, Instr* instr) {
     uint8_t
-        c = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_C_MASK,
-        z = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_Z_MASK
+        c = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_C_MASK,
+        z = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_Z_MASK
     ;
     
     if (c == 1 && z == 0)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jls_vn(CPUCore* core, Instr* instr) {
     uint8_t
-        c = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_C_MASK,
-        z = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_Z_MASK
+        c = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_C_MASK,
+        z = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_Z_MASK
     ;
     
     if (c == 0 || z == 1)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jlt_vn(CPUCore* core, Instr* instr) {
     uint8_t
-        n = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_N_MASK,
-        v = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_V_MASK
+        n = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_N_MASK,
+        v = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_V_MASK
     ;
     
     if (n != v)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jge_vn(CPUCore* core, Instr* instr) {
     uint8_t
-        n = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_N_MASK,
-        v = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_V_MASK
+        n = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_N_MASK,
+        v = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_V_MASK
     ;
     
     if (n == v)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jgt_vn(CPUCore* core, Instr* instr) {
     uint8_t
-        n = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_N_MASK,
-        v = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_V_MASK,
-        z = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_Z_MASK
+        n = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_N_MASK,
+        v = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_V_MASK,
+        z = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_Z_MASK
     ;
     
     if (z == 0 && n == v)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jle_vn(CPUCore* core, Instr* instr) {
     uint8_t
-        n = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_N_MASK,
-        v = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_V_MASK,
-        z = core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_Z_MASK
+        n = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_N_MASK,
+        v = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_V_MASK,
+        z = core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_Z_MASK
     ;
     
     if (z == 1 && n != v)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jeq_vn(CPUCore* core, Instr* instr) {
-    if (core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_Z_MASK)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+    if (core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_Z_MASK)
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jne_vn(CPUCore* core, Instr* instr) {
-    if ((core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_Z_MASK) == 0)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+    if ((core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_Z_MASK) == 0)
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jmi_vn(CPUCore* core, Instr* instr) {
-    if (core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_N_MASK)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+    if (core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_N_MASK)
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jpl_vn(CPUCore* core, Instr* instr) {
-    if ((core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_N_MASK) == 0)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+    if ((core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_N_MASK) == 0)
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jvs_vn(CPUCore* core, Instr* instr) {
-    if (core->sregs[HCAE_32V1_SR_PST] &HCAE_32V1_PST_CMP_V_MASK)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+    if (core->sregs[HCAE_32V1_PST] &HCAE_32V1_PST_CONDF_V_MASK)
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static void jvc_vn(CPUCore* core, Instr* instr) {
-    if ((core->sregs[HCAE_32V1_SR_PST] & HCAE_32V1_PST_CMP_V_MASK) == 0)
-        core->regs[HCAE_32V1_SPR_PC] += instr->val;
+    if ((core->sregs[HCAE_32V1_PST] & HCAE_32V1_PST_CONDF_V_MASK) == 0)
+        core->regs[HCAE_32V1_PC] += instr->val;
 }
 
 
 static inline void tst(CPUCore* core, HCAE_32V1Word a, HCAE_32V1Word b) {
     HCAE_32V1Word r = a & b;
     
-    HCAE_32V1Word pst = core->sregs[HCAE_32V1_SR_PST];
+    HCAE_32V1Word pst = core->sregs[HCAE_32V1_PST];
 
-    pst &= ~(HCAE_32V1_PST_CMP_N_MASK | HCAE_32V1_PST_CMP_Z_MASK | HCAE_32V1_PST_CMP_C_MASK | HCAE_32V1_PST_CMP_V_MASK);
+    pst &= ~(HCAE_32V1_PST_CONDF_N_MASK | HCAE_32V1_PST_CONDF_Z_MASK | HCAE_32V1_PST_CONDF_C_MASK | HCAE_32V1_PST_CONDF_V_MASK);
     
-    pst |= (((r >> (HCAE_32V1_WORD_BITS - 1)) & 0x1) << HCAE_32V1_PST_CMP_N_SHIFT);
-    pst |= ((r == 0) << HCAE_32V1_PST_CMP_Z_SHIFT);
+    pst |= (((r >> (HCAE_32V1_WORD_BITS - 1)) & 0x1) << HCAE_32V1_PST_CONDF_N_SHIFT);
+    pst |= ((r == 0) << HCAE_32V1_PST_CONDF_Z_SHIFT);
     
-    core->sregs[HCAE_32V1_SR_PST] = pst;
+    core->sregs[HCAE_32V1_PST] = pst;
 }
 
 static void tst_rr(CPUCore* core, Instr* instr) {
@@ -508,16 +508,16 @@ static void csr_rv(CPUCore* core, Instr* instr) {
 static inline HCAE_32V1Word adds(CPUCore* core, HCAE_32V1Word a, HCAE_32V1Word b) {
     HCAE_32V1Word r = a + b;
     
-    HCAE_32V1Word pst = core->sregs[HCAE_32V1_SR_PST];
+    HCAE_32V1Word pst = core->sregs[HCAE_32V1_PST];
 
-    pst &= ~(HCAE_32V1_PST_CMP_N_MASK | HCAE_32V1_PST_CMP_Z_MASK | HCAE_32V1_PST_CMP_C_MASK | HCAE_32V1_PST_CMP_V_MASK);
+    pst &= ~(HCAE_32V1_PST_CONDF_N_MASK | HCAE_32V1_PST_CONDF_Z_MASK | HCAE_32V1_PST_CONDF_C_MASK | HCAE_32V1_PST_CONDF_V_MASK);
     
-    pst |= (((r >> (HCAE_32V1_WORD_BITS - 1)) & 0x1) << HCAE_32V1_PST_CMP_N_SHIFT);
-    pst |= ((r == 0) << HCAE_32V1_PST_CMP_Z_SHIFT);
-    pst |= ((r < a) << HCAE_32V1_PST_CMP_C_SHIFT);
-    pst |= (((~(a ^ b) & (a ^ r)) >> (HCAE_32V1_WORD_BITS - 1) & 0x1) << HCAE_32V1_PST_CMP_V_SHIFT);
+    pst |= (((r >> (HCAE_32V1_WORD_BITS - 1)) & 0x1) << HCAE_32V1_PST_CONDF_N_SHIFT);
+    pst |= ((r == 0) << HCAE_32V1_PST_CONDF_Z_SHIFT);
+    pst |= ((r < a) << HCAE_32V1_PST_CONDF_C_SHIFT);
+    pst |= (((~(a ^ b) & (a ^ r)) >> (HCAE_32V1_WORD_BITS - 1) & 0x1) << HCAE_32V1_PST_CONDF_V_SHIFT);
     
-    core->sregs[HCAE_32V1_SR_PST] = pst;
+    core->sregs[HCAE_32V1_PST] = pst;
     return r;
 }
 
@@ -539,7 +539,7 @@ static void scall_nn(CPUCore* core, Instr* instr) {
 
 static void psr_rr(CPUCore* core, Instr* instr) {
     if (instr->rd >= _HCAE_32V1_SR_ENDOFLIST) {
-        core->regs[HCAE_32V1_SPR_PC] = instr->addr;
+        core->regs[HCAE_32V1_PC] = instr->addr;
         cpu_core_syncexcept(core, HCAE_32V1_SYNCEXCEPT_UI);
         return;
     }
@@ -551,7 +551,7 @@ static void psr_rr(CPUCore* core, Instr* instr) {
 
 static void psrr_rr(CPUCore* core, Instr* instr) {
     if (instr->rs >= _HCAE_32V1_SR_ENDOFLIST) {
-        core->regs[HCAE_32V1_SPR_PC] = instr->addr;
+        core->regs[HCAE_32V1_PC] = instr->addr;
         cpu_core_syncexcept(core, HCAE_32V1_SYNCEXCEPT_UI);
         return;
     }
@@ -562,7 +562,7 @@ static void psrr_rr(CPUCore* core, Instr* instr) {
 
 static void eret_nn(CPUCore* core, Instr* instr) {
     (void)instr;
-    core->regs[HCAE_32V1_SPR_PC] = core->sregs[HCAE_32V1_SR_ILR];
+    core->regs[HCAE_32V1_PC] = core->sregs[HCAE_32V1_ILR];
 }
 
 

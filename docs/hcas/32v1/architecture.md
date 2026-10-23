@@ -3,7 +3,9 @@
 The first 32-bit HCA specification.
 
 A simple architecture that covers most of the essential things of a CPU.
-It has a simple ISA and no privelege modes.
+It has a simple ISA, 4 interrupt types and no privilege modes.
+
+(DEV: This is the first architecture that I wrote, some parts may be unnecessary and I might not document things well sometimes)
 
 The ISA can be found [here](isa.md).
 
@@ -46,8 +48,8 @@ Bits and bit fields of PST:
 
 ## Synchronous Exception Subtypes
 
- - Memory Fault (MF, #0): Happens when the CPU accesses an invalid memory address(out-of-bounds), or an attempt to write in ROM was made.
- - Unknown Instruction (UI, #1)
+ - Memory Fault (MF, #0): Happens when the CPU accesses an invalid memory address(out-of-bounds), or attempts to write in ROM.
+ - Unknown Instruction (UI, #1): Triggers when the CPU encounters an invalid instruction.
  - Division by Zero (DBZ, #2)
  - System Call (SC, #3): Triggered by the ``SCALL`` instruction.
 

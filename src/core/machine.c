@@ -200,18 +200,3 @@ int HCAE_RunMachine(HCAE_Machine* mach, size_t step_cnt) {
     
     return 1;
 }
-
-
-int HCAE_GetMachineCPUCoreRegister(HCAE_Machine* mach, size_t core_id, HCAE_CPURegisterIndex reg_idx, HCAE_CPUWord* dst) {
-    if (!mach) {
-        set_error(HCAE_ERROR_II);
-        return 0;
-    }
-    
-    if (!mach->settings_applied) {
-        set_error(HCAE_ERROR_ORSTBA);
-        return 0;
-    }
-    
-    return get_cpu_core_reg(mach->cpu, core_id, reg_idx, dst);
-}
