@@ -1,10 +1,13 @@
 # HCAE
 
-Himrich's CPU Architecture and Emulator (HCAE)
+**Himrich's CPU Architecture and Emulator (HCAE)**
 
-(DEV: V1.0 work in progress)
+*(DEV: V1.0 work in progress)*
+
+This is the official HCAE codebase.
 
 More information can be found [here](docs/introduction.md).
+
 The MIT License details are in [here](LICENSE).
 
 ## Installation
@@ -48,4 +51,3 @@ See additional options with:
 ```Bash
 make help
 ```
-
