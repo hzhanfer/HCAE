@@ -6,13 +6,13 @@ TARGET_TARGET_API_DIR := cpu-api
 
 BUILD_DIR := build/$(TARGET)
 
-EMU_MAIN_O_FILE := $(BUILD_DIR)/core/emu-main.o
-CONF_MAIN_O_FILE := $(BUILD_DIR)/core/config-main.o
+EMU_MAIN_O_FILE := $(BUILD_DIR)/common/emu-main.o
+CONF_MAIN_O_FILE := $(BUILD_DIR)/common/config-main.o
 
-CORE_C_FILES := $(shell find core -type f -name '*.c')
+COMMON_C_FILES := $(shell find common -type f -name '*.c')
 TARGET_C_FILES := $(shell if [ -n "$(TARGET)" ] && [ -d "$(TARGET_TARGET_DIR)" ]; then find "$(TARGET_TARGET_DIR)" -type f -name '*.c'; fi)
 
-C_FILES := $(CORE_C_FILES) $(TARGET_C_FILES)
+C_FILES := $(COMMON_C_FILES) $(TARGET_C_FILES)
 O_FILES := $(patsubst %.c,$(BUILD_DIR)/%.o,$(C_FILES))
 D_FILES := $(O_FILES:.o=.d)
 
@@ -21,8 +21,8 @@ EMU_O_FILES := $(filter-out $(CONF_MAIN_O_FILE),$(O_FILES))
 CONF_O_FILES := $(filter-out $(EMU_MAIN_O_FILE),$(O_FILES))
 
 CC_FLAGS := \
-	-Wall -Wextra \
-	-I. -Icore -I$(TARGET_TARGET_DIR) \
+	-std=c11 -pedantic -Wall -Wextra \
+	-I. -Icommon -I$(TARGET_TARGET_DIR) \
 	-ffunction-sections -fdata-sections \
 	-fPIC -O2 \
 	-DTARGET_CPU_HEADER=\"$(TARGET_TARGET_DIR)/$(TARGET_TARGET_API_DIR)/cpu.h\"

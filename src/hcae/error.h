@@ -1,29 +1,24 @@
-#ifndef HCAE_ERROR_H
-#define HCAE_ERROR_H
+#ifndef __HCAE_HEADER_ERROR
+#define __HCAE_HEADER_ERROR
 
 
-typedef enum HCAE_Error {
-    HCAE_ERROR_N = 0, // none
-    HCAE_ERROR_OOM, // out of memory
-    HCAE_ERROR_OOB, // out of bounds
-    HCAE_ERROR_ORSTBA, // operation requires settings to be applied
-    HCAE_ERROR_SHABA, // settings have already been applied
-    HCAE_ERROR_ATCASASHABA, // attempted to change a setting after settings have already been applied
-    HCAE_ERROR_ICCC, // invalid cpu core count
-    HCAE_ERROR_IRI, // invalid register index
-    HCAE_ERROR_CMNS, // cpu definition not set
-    HCAE_ERROR_ICMMCC, // invalid cpu model max core count
-    HCAE_ERROR_MDNS, // memory device not set
-    HCAE_ERROR_MDOWE, // memory devices overlap with eachother
-    HCAE_ERROR_MDSTB, // memory device size too big
-    HCAE_ERROR_MDITS, // memory device is too small
-    HCAE_ERROR_II, // invalid input
-    HCAE_ERROR_MAR // machine already running
-} HCAE_Error;
+typedef enum HCAE_ErrorCode {
+    HCAE_ERRCODE_NONE = 0,
+    HCAE_ERRCODE_OUT_OF_MEM,
+    HCAE_ERRCODE_INVALID_PARAMS,
+    HCAE_ERRCODE_OP_BLOCKED,
+    HCAE_ERRCODE_MAX_EXCEEDED,
+    HCAE_ERRCODE_DEP_CNT_NOT_ZERO,
+    HCAE_ERRCODE_BRD_ALRDY_HAS_A_CPU
+} HCAE_ErrorCode;
 
 
-HCAE_Error HCAE_GetError(void);
-void HCAE_ResetError(void);
+HCAE_ErrorCode HCAE_GetErrorCode(void);
+const char* HCAE_GetErrorFunctionName(void);
+const char* HCAE_GetErrorMessage(void);
+void* HCAE_GetErrorObject(void);
+
+void HCAE_ClearError(void);
 
 
 #endif
